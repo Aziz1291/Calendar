@@ -13,15 +13,15 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-3">
         <div class="container-fluid">
             <div>
-                <a href="../public/index.php" class="navbar-brand">Company Calendar</a>
+                <a href="index.php" class="navbar-brand">Company Calendar</a>
                 <?php if (is_authenticated()): ?>
                     <?php $navUser = current_user(); ?>
-                    <a href="../public/dashboard.php" class="navbar-brand">Dashboard</a>
+                    <a href="dashboard.php" class="navbar-brand">Dashboard</a>
                     <?php if ($navUser->isAdmin()): ?>
-                        <a href="../public/eventsTable.php" class="navbar-brand">All Requests</a>
-                        <a href="../public/usersTable.php" class="navbar-brand">Employees</a>
+                        <a href="eventsTable.php" class="navbar-brand">All Requests</a>
+                        <a href="usersTable.php" class="navbar-brand">Employees</a>
                     <?php else: ?>
-                        <a href="../public/eventsTable.php" class="navbar-brand">My Day-Off Requests</a>
+                        <a href="eventsTable.php" class="navbar-brand">My Day-Off Requests</a>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
@@ -32,10 +32,10 @@
                         Hello, <?= h($user->getUsername()) ?>
                         <span class="badge bg-secondary ms-1"><?= h($user->getRole()) ?></span>
                     </span>
-                    <a href="../public/logout.php" class="btn btn-light btn-sm">Logout</a>
+                    <a href="logout.php" class="btn btn-light btn-sm">Logout</a>
                 <?php else: ?>
-                    <a href="../public/login.php" class="btn btn-outline-light btn-sm me-2">Login</a>
-                    <a href="../public/register.php" class="btn btn-light btn-sm">Sign Up</a>
+                    <a href="login.php" class="btn btn-outline-light btn-sm me-2">Login</a>
+                    <a href="register.php" class="btn btn-light btn-sm">Sign Up</a>
                 <?php endif; ?>
             </div>
         </div>
