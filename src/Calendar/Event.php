@@ -11,6 +11,7 @@ class Event
     private $status;
     private $admin_event;
     private $rejectionReason;
+    private $created_at;
     public function getRejectionReason()
     {
         return $this->rejectionReason;
