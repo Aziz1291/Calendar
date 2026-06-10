@@ -17,7 +17,7 @@
                     <div class="card-body p-4">
                         <h2 class="text-center mb-4">Create Account</h2>
 
-                        <form action="../src/Calendar/registerAction.php" method="POST">
+                        <form action="registerAction.php" method="POST">
 
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>

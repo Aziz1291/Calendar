@@ -15,7 +15,7 @@
                     <div class="card-body p-4">
                         <h2 class="text-center mb-4">Welcome Back</h2>
                         
-                        <form action="../src/Calendar/loginAction.php" method="POST">
+                        <form action="loginAction.php" method="POST">
                             
                             <div class="mb-3">
                                 <label for="loginEmail" class="form-label">Email or Username</label>

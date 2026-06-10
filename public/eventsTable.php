@@ -96,15 +96,15 @@ render('header.php');
                                 <a href="delete.php?id=<?= $event->getId() ?>" class="btn btn-danger btn-sm">Delete</a>
                             <?php elseif ($user->isAdmin()): ?>
                                 <?php if ($event->getStatus() === 'Pending'): ?>
-                                    <a href="../src/Calendar/AdminActionApprove.php?id=<?= $event->getId() ?>"
+                                    <a href="AdminActionApprove.php?id=<?= $event->getId() ?>"
                                         class="btn btn-success btn-sm">Approve</a>
-                                    <a href="../src/Calendar/AdminActionReject.php?id=<?= $event->getId() ?>"
+                                    <a href="AdminActionReject.php?id=<?= $event->getId() ?>"
                                         class="btn btn-danger btn-sm">Reject</a>
                                 <?php elseif ($event->getStatus() === 'Approved'): ?>
-                                    <a href="../src/Calendar/AdminActionReject.php?id=<?= $event->getId() ?>"
+                                        <a href="AdminActionReject.php?id=<?= $event->getId() ?>"
                                         class="btn btn-danger btn-sm">Reject</a>
                                 <?php elseif ($event->getStatus() === 'Rejected'): ?>
-                                    <a href="../src/Calendar/AdminActionApprove.php?id=<?= $event->getId() ?>"
+                                    <a href="AdminActionApprove.php?id=<?= $event->getId() ?>"
                                         class="btn btn-success btn-sm">Approve</a>
                                 <?php endif; ?>
                             <?php endif; ?>
