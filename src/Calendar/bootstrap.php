@@ -20,17 +20,37 @@ function get_pdo(): \PDO
         return $pdo;
     }
 
-    $configFile = __DIR__ . '/../../config.php';
-    if (!file_exists($configFile)) {
-        throw new \RuntimeException('config.php not found. Copy config.example.php to config.php and fill in your credentials.');
+    // First try environment variables (useful for hosting on Render)
+    $host = getenv('DB_HOST') ?: null;
+    $port = getenv('DB_PORT') ?: null;
+    $dbname = getenv('DB_NAME') ?: null;
+    $username = getenv('DB_USER') ?: null;
+    $password = getenv('DB_PASSWORD') ?: null;
+    $ssl_ca = getenv('DB_SSL_CA') ?: null;
+    $ssl_verify = getenv('DB_SSL_VERIFY') !== 'false';
+
+    // Fall back to config.php if environment variables are not fully set
+    if (!$host || !$username) {
+        $configFile = __DIR__ . '/../../config.php';
+        if (file_exists($configFile)) {
+            $cfg = require $configFile;
+            $host = $cfg['host'] ?? null;
+            $port = $cfg['port'] ?? null;
+            $dbname = $cfg['dbname'] ?? null;
+            $username = $cfg['username'] ?? null;
+            $password = $cfg['password'] ?? null;
+            $ssl_ca = $cfg['ssl_ca'] ?? null;
+            $ssl_verify = true;
+        } else {
+            throw new \RuntimeException('Database configuration not found. Please set database environment variables or create a config.php file.');
+        }
     }
-    $cfg = require $configFile;
 
     $dsn = sprintf(
         'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
-        $cfg['host'],
-        $cfg['port'],
-        $cfg['dbname']
+        $host,
+        $port ?: '3306',
+        $dbname ?: 'defaultdb'
     );
 
     $options = [
@@ -39,13 +59,17 @@ function get_pdo(): \PDO
         \PDO::ATTR_PERSISTENT         => false,
     ];
 
-    // Aiven requires SSL — attach CA cert if the file exists
-    if (!empty($cfg['ssl_ca']) && file_exists($cfg['ssl_ca'])) {
-        $options[\PDO::MYSQL_ATTR_SSL_CA]      = $cfg['ssl_ca'];
-        $options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+    // Handle SSL options for Aiven or secure databases
+    if ($ssl_ca && file_exists($ssl_ca)) {
+        $options[\PDO::MYSQL_ATTR_SSL_CA] = $ssl_ca;
+        $options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl_verify;
+    } elseif (getenv('DB_SSL') === 'true' || strpos($host, 'aivencloud.com') !== false) {
+        // If it's an Aiven host or DB_SSL is requested, initiate an encrypted connection
+        // without verifying the server certificate file path.
+        $options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
     }
 
-    $pdo = new \PDO($dsn, $cfg['username'], $cfg['password'], $options);
+    $pdo = new \PDO($dsn, $username, $password, $options);
     return $pdo;
 }
 /**
