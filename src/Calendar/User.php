@@ -94,7 +94,9 @@ class User
         $login = $this->getUserByLogin($EmailorUsername);
         if ($login) {
             if (password_verify($password, $login['password'])) {
-                session_start();
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
                 $_SESSION['id'] = $login['id'];
                 return true;
             }
