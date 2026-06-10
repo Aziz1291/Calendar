@@ -1,0 +1,19 @@
+# ── Credentials & secrets (NEVER commit these) ──────────────
+config.php
+ca.pem
+
+# ── OS & editor junk ─────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ── PHP ───────────────────────────────────────────────────────
+vendor/
+composer.lock
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log

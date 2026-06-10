@@ -1,0 +1,89 @@
+.calendar {
+    position: relative;
+}
+
+.calendar__table {
+    width: 100%;
+    height: calc(100vh - 128px);
+}
+
+.calendar__table td,
+th {
+    padding: 10px;
+    border: 1px solid #CCC;
+    vertical-align: top;
+    width: 14.29%;
+
+}
+
+.calendar__weekday {
+    color: #000;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.calendar__othermonth .calendar__day {
+    opacity: 0.3;
+}
+
+.calendar__day {
+    text-decoration: none;
+    font-size: 1.3em;
+}
+
+.calendar__table--6weeks td {
+    height: 16.66%;
+}
+
+.calendar__button {
+    width: 55px;
+    height: 55px;
+    line-height: 55px;
+    text-align: center;
+    font-style: 30px;
+    background-color: #007bff;
+    border-radius: 50%;
+    color: #fff;
+    text-decoration: none;
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    transition: transform 0.3s;
+}
+
+.calendar__button:hover {
+    text-decoration: none;
+    color: #FFF;
+    transform: scale(1.2);
+}
+
+.calendar__table td.is-today {
+    background-color: #f3f3f3 !important;
+}
+
+.Approved {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.Rejected {
+    background-color: #dc3545;
+    color: white;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.Pending {
+    background-color: #ffc107;
+    color: black;
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: inline-block;
+}
