@@ -1,89 +1,452 @@
-.calendar {
-    position: relative;
+/* ============================================================
+   Company Calendar — Design System
+   Font: Inter (Google Fonts)
+   Palette: Deep Indigo / Violet / Emerald / Amber / Rose
+   ============================================================ */
+
+/* ---- Base Reset & Variables ---- */
+:root {
+  --color-primary:      #1e1b4b;
+  --color-accent:       #4f46e5;
+  --color-accent-light: #818cf8;
+  --color-surface:      #f5f4ff;
+  --color-card:         #ffffff;
+  --color-approved:     #10b981;
+  --color-pending:      #f59e0b;
+  --color-rejected:     #f43f5e;
+  --color-text:         #0f172a;
+  --color-muted:        #64748b;
+  --color-border:       #e2e8f0;
+  --radius-card:        14px;
+  --radius-btn:         10px;
+  --radius-badge:       999px;
+  --shadow-card:        0 1px 4px rgba(0,0,0,0.08), 0 4px 16px rgba(79,70,229,0.07);
+  --shadow-btn:         0 2px 8px rgba(79,70,229,0.20);
+  --font:               'Inter', system-ui, sans-serif;
+  --transition:         0.2s ease;
 }
 
-.calendar__table {
-    width: 100%;
-    height: calc(100vh - 128px);
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-.calendar__table td,
-th {
-    padding: 10px;
-    border: 1px solid #CCC;
-    vertical-align: top;
-    width: 14.29%;
-
+body {
+  font-family: var(--font);
+  background: var(--color-surface);
+  color: var(--color-text);
+  min-height: 100vh;
+  margin: 0;
 }
 
-.calendar__weekday {
-    color: #000;
-    font-size: 1.2em;
-    font-weight: bold;
+/* ---- Navbar ---- */
+.navbar {
+  background: var(--color-primary) !important;
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 2px 12px rgba(30,27,75,0.18);
 }
 
-.calendar__othermonth .calendar__day {
-    opacity: 0.3;
+.navbar-brand {
+  font-weight: 700;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.85) !important;
+  transition: color var(--transition);
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
 }
 
-.calendar__day {
-    text-decoration: none;
-    font-size: 1.3em;
+.navbar-brand:first-child {
+  font-size: 1.1rem;
+  color: #fff !important;
 }
 
-.calendar__table--6weeks td {
-    height: 16.66%;
+.navbar-brand:hover {
+  color: var(--color-accent-light) !important;
+  background: rgba(255,255,255,0.07);
 }
 
-.calendar__button {
-    width: 55px;
-    height: 55px;
-    line-height: 55px;
-    text-align: center;
-    font-style: 30px;
-    background-color: #007bff;
-    border-radius: 50%;
-    color: #fff;
-    text-decoration: none;
-    position: absolute;
-    bottom: 30px;
-    right: 30px;
-    transition: transform 0.3s;
+/* ---- Cards ---- */
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  background: var(--color-card);
+  transition: transform var(--transition), box-shadow var(--transition);
 }
 
-.calendar__button:hover {
-    text-decoration: none;
-    color: #FFF;
-    transform: scale(1.2);
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(79,70,229,0.13);
 }
 
-.calendar__table td.is-today {
-    background-color: #f3f3f3 !important;
+/* ---- Buttons ---- */
+.btn {
+  border-radius: var(--radius-btn) !important;
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 1.1rem;
+  transition: all var(--transition);
+  min-height: 38px;
+}
+
+.btn-primary {
+  background: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  box-shadow: var(--shadow-btn);
+}
+
+.btn-primary:hover {
+  background: #4338ca !important;
+  border-color: #4338ca !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(79,70,229,0.35);
+}
+
+.btn-success {
+  background: var(--color-approved) !important;
+  border-color: var(--color-approved) !important;
+}
+
+.btn-success:hover {
+  background: #059669 !important;
+  border-color: #059669 !important;
+}
+
+.btn-danger {
+  background: var(--color-rejected) !important;
+  border-color: var(--color-rejected) !important;
+}
+
+.btn-danger:hover {
+  background: #e11d48 !important;
+  border-color: #e11d48 !important;
+}
+
+.btn-sm {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.75rem;
+  min-height: 30px;
+}
+
+/* ---- Forms ---- */
+.form-control, .form-select {
+  border-radius: 10px !important;
+  border: 1.5px solid var(--color-border);
+  font-size: 0.9rem;
+  padding: 0.6rem 0.9rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  font-family: var(--font);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.12);
+  outline: none;
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-text);
+  margin-bottom: 0.35rem;
+}
+
+/* ---- Tables ---- */
+.table {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-shadow: var(--shadow-card);
+  background: var(--color-card);
+}
+
+.table thead.table-dark th {
+  background: var(--color-primary) !important;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: none;
+  padding: 0.9rem 1rem;
+}
+
+.table tbody tr {
+  transition: background var(--transition);
+}
+
+.table tbody tr:hover {
+  background: #f0eeff !important;
+}
+
+.table tbody td {
+  border-top: 1px solid var(--color-border);
+  padding: 0.8rem 1rem;
+  vertical-align: middle;
+  font-size: 0.9rem;
+}
+
+/* ---- Status Badges ---- */
+.Approved, .Pending, .Rejected {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  padding: 0.3em 0.85em;
+  border-radius: var(--radius-badge);
+  text-transform: uppercase;
 }
 
 .Approved {
-    background-color: #28a745;
-    color: white;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 12px;
-    display: inline-block;
-}
-
-.Rejected {
-    background-color: #dc3545;
-    color: white;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 12px;
-    display: inline-block;
+  background: rgba(16,185,129,0.12);
+  color: #065f46;
+  border: 1.5px solid rgba(16,185,129,0.3);
 }
 
 .Pending {
-    background-color: #ffc107;
-    color: black;
-    font-weight: bold;
-    padding: 4px 10px;
-    border-radius: 12px;
-    display: inline-block;
+  background: rgba(245,158,11,0.12);
+  color: #92400e;
+  border: 1.5px solid rgba(245,158,11,0.3);
+}
+
+.Rejected {
+  background: rgba(244,63,94,0.12);
+  color: #9f1239;
+  border: 1.5px solid rgba(244,63,94,0.3);
+}
+
+/* ---- Calendar Grid ---- */
+.calendar {
+  position: relative;
+  padding: 0 1rem 5rem;
+}
+
+.calendar__table {
+  width: 100%;
+  height: calc(100vh - 140px);
+  border-collapse: separate;
+  border-spacing: 4px;
+}
+
+.calendar__table td,
+.calendar__table th {
+  padding: 8px 10px;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  vertical-align: top;
+  width: 14.29%;
+  transition: background var(--transition);
+}
+
+.calendar__table td:hover {
+  background: #f0eeff;
+  border-color: var(--color-accent-light);
+}
+
+.calendar__weekday {
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 4px;
+}
+
+.calendar__day {
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background var(--transition), color var(--transition);
+}
+
+.calendar__day:hover {
+  background: var(--color-accent);
+  color: #fff !important;
+}
+
+.calendar__othermonth .calendar__day {
+  opacity: 0.3;
+}
+
+.calendar__table td.is-today {
+  background: #eef2ff !important;
+  border-color: var(--color-accent-light) !important;
+}
+
+.calendar__table td.is-today .calendar__day {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.calendar__event {
+  margin-top: 3px;
+}
+
+.calendar__event a {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.calendar__event a.Approved {
+  background: rgba(16,185,129,0.15);
+  color: #065f46;
+}
+
+.calendar__event a.Pending {
+  background: rgba(245,158,11,0.15);
+  color: #92400e;
+}
+
+.calendar__event a.Rejected {
+  background: rgba(244,63,94,0.15);
+  color: #9f1239;
+}
+
+/* ---- FAB Button (Add Event) ---- */
+.calendar__button {
+  width: 52px;
+  height: 52px;
+  line-height: 52px;
+  text-align: center;
+  font-size: 26px;
+  font-style: normal;
+  background: var(--color-accent);
+  border-radius: 50%;
+  color: #fff;
+  text-decoration: none;
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  box-shadow: 0 4px 20px rgba(79,70,229,0.4);
+  transition: transform var(--transition), box-shadow var(--transition);
+  z-index: 100;
+}
+
+.calendar__button:hover {
+  text-decoration: none;
+  color: #fff;
+  transform: scale(1.12) rotate(90deg);
+  box-shadow: 0 6px 28px rgba(79,70,229,0.55);
+}
+
+/* ---- Alerts ---- */
+.alert {
+  border-radius: 12px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.alert-info {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.alert-success {
+  background: rgba(16,185,129,0.1);
+  color: #065f46;
+  border-left: 4px solid var(--color-approved);
+}
+
+/* ---- Focus Visible (Accessibility) ---- */
+:focus-visible {
+  outline: 3px solid var(--color-accent-light);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---- Badges ---- */
+.badge {
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3em 0.7em;
+}
+
+/* ---- Container ---- */
+.container, .container-fluid {
+  font-family: var(--font);
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+h1 { font-size: 1.7rem; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.15rem; }
+
+/* ---- Page headings ---- */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-header .page-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+/* ---- Calendar table 6 weeks variant ---- */
+.calendar__table--6weeks td {
+  height: 16.66%;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .calendar__table {
+    height: auto;
+  }
+
+  .calendar__table td,
+  .calendar__table th {
+    padding: 4px 5px;
+    border-radius: 6px;
+  }
+
+  .calendar__weekday {
+    font-size: 0.6rem;
+  }
+
+  .calendar__day {
+    font-size: 0.8rem;
+    width: 22px;
+    height: 22px;
+  }
+
+  .calendar__event a {
+    font-size: 0.62rem;
+    padding: 1px 4px;
+  }
+
+  .calendar__button {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    font-size: 22px;
+    bottom: 20px;
+    right: 20px;
+  }
 }

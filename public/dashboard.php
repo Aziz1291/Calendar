@@ -33,58 +33,96 @@ if ($isAdmin) {
 render('header.php', ['title' => 'Dashboard']);
 ?>
 
-<div class="container mt-4">
-    <h1 class="mb-4">
-        <?= $isAdmin ? 'Admin Dashboard' : 'My Dashboard' ?>
-    </h1>
+<div class="container mt-2" style="max-width:900px;">
+
+    <!-- Page Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+        <div>
+            <h1 class="mb-0">
+                <?= $isAdmin ? '🛠️ Admin Dashboard' : '👤 My Dashboard' ?>
+            </h1>
+            <p style="color:var(--color-muted);font-size:0.9rem;margin-top:0.3rem;">
+                <?= $isAdmin
+                    ? "Overview of all leave requests across your team"
+                    : "Track your leave requests and status" ?>
+            </p>
+        </div>
+        <a href="add.php" class="btn btn-primary">
+            <?= $isAdmin ? '+ Create Company Event' : '+ Request Day Off' ?>
+        </a>
+    </div>
 
     <!-- Stats Cards -->
     <div class="row g-3 mb-4">
-        <div class="col-md-4">
-            <div class="card text-bg-warning">
-                <div class="card-body text-center">
-                    <h3 class="display-4">
-                        <?= $pendingCount ?>
-                    </h3>
-                    <p class="mb-0">Pending</p>
+        <div class="col-sm-4">
+            <div class="card h-100" style="border-top:4px solid #f59e0b;">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div style="font-size:2rem;line-height:1;">⏳</div>
+                    <div>
+                        <div style="font-size:2rem;font-weight:800;color:#92400e;line-height:1.1;">
+                            <?= $pendingCount ?>
+                        </div>
+                        <div style="font-size:0.8rem;font-weight:600;color:var(--color-muted);text-transform:uppercase;letter-spacing:0.05em;">
+                            Pending
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-bg-success">
-                <div class="card-body text-center">
-                    <h3 class="display-4">
-                        <?= $approvedCount ?>
-                    </h3>
-                    <p class="mb-0">Approved</p>
+        <div class="col-sm-4">
+            <div class="card h-100" style="border-top:4px solid #10b981;">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div style="font-size:2rem;line-height:1;">✅</div>
+                    <div>
+                        <div style="font-size:2rem;font-weight:800;color:#065f46;line-height:1.1;">
+                            <?= $approvedCount ?>
+                        </div>
+                        <div style="font-size:0.8rem;font-weight:600;color:var(--color-muted);text-transform:uppercase;letter-spacing:0.05em;">
+                            Approved
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-bg-danger">
-                <div class="card-body text-center">
-                    <h3 class="display-4">
-                        <?= $rejectedCount ?>
-                    </h3>
-                    <p class="mb-0">Rejected</p>
+        <div class="col-sm-4">
+            <div class="card h-100" style="border-top:4px solid #f43f5e;">
+                <div class="card-body d-flex align-items-center gap-3">
+                    <div style="font-size:2rem;line-height:1;">❌</div>
+                    <div>
+                        <div style="font-size:2rem;font-weight:800;color:#9f1239;line-height:1.1;">
+                            <?= $rejectedCount ?>
+                        </div>
+                        <div style="font-size:0.8rem;font-weight:600;color:var(--color-muted);text-transform:uppercase;letter-spacing:0.05em;">
+                            Rejected
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="d-flex flex-wrap gap-2">
-        <a href="add.php" class="btn btn-primary">
-            <?= $isAdmin ? '+ Create Company Event' : '+ Request Day Off' ?>
-        </a>
-        <a href="eventsTable.php" class="btn btn-outline-secondary">
-            <?= $isAdmin ? 'View All Requests' : 'My Requests' ?>
-        </a>
-        <a href="index.php" class="btn btn-outline-primary">Calendar</a>
-        <?php if ($isAdmin): ?>
-            <a href="usersTable.php" class="btn btn-outline-info">Employees</a>
-        <?php endif; ?>
+    <div class="card">
+        <div class="card-body">
+            <h2 style="font-size:1rem;margin-bottom:1rem;color:var(--color-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+                Quick Actions
+            </h2>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="eventsTable.php" class="btn btn-outline-secondary">
+                    📋 <?= $isAdmin ? 'View All Requests' : 'My Requests' ?>
+                </a>
+                <a href="index.php" class="btn btn-outline-secondary">
+                    📅 Calendar View
+                </a>
+                <?php if ($isAdmin): ?>
+                    <a href="usersTable.php" class="btn btn-outline-secondary">
+                        👥 Manage Employees
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
+
 </div>
 
-<?php render('footer.php'); ?>
+<?php render('footer.php'); ?>
