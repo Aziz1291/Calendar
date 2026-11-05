@@ -1,49 +1,72 @@
+<?php
+$currentScript = basename($_SERVER['PHP_SELF'] ?? '');
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($title) ? h($title) : 'Company Calendar'; ?></title>
+    <title><?php echo isset($title) ? h($title) . ' — Calendar Manager' : 'Calendar Manager — Editorial Team Scheduling'; ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/calendar.css?t=<?= time() ?>">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📅</text></svg>">
 </head>
-
 <body>
-    <nav class="navbar navbar-expand-lg mb-3">
-        <div class="container-fluid">
-            <div class="d-flex align-items-center gap-1">
-                <a href="index.php" class="navbar-brand">📅 Calendar</a>
+    <header class="masthead">
+        <div class="masthead__inner">
+            <div class="d-flex align-items-center gap-3">
+                <a href="index.php" class="brand">
+                    <span>📅</span>
+                    <span>Calendar Manager</span>
+                    <span class="brand__badge">Suite</span>
+                </a>
                 <?php if (is_authenticated()): ?>
                     <?php $navUser = current_user(); ?>
-                    <a href="dashboard.php" class="navbar-brand">Dashboard</a>
-                    <?php if ($navUser->isAdmin()): ?>
-                        <a href="eventsTable.php" class="navbar-brand">All Requests</a>
-                        <a href="usersTable.php" class="navbar-brand">Employees</a>
-                    <?php else: ?>
-                        <a href="eventsTable.php" class="navbar-brand">My Requests</a>
-                    <?php endif; ?>
+                    <nav class="nav-links d-none d-md-flex">
+                        <a href="index.php" class="nav-link <?= ($currentScript === 'index.php') ? 'is-active' : '' ?>">Calendar</a>
+                        <a href="dashboard.php" class="nav-link <?= ($currentScript === 'dashboard.php') ? 'is-active' : '' ?>">Dashboard</a>
+                        <?php if ($navUser && $navUser->isAdmin()): ?>
+                            <a href="eventsTable.php" class="nav-link <?= ($currentScript === 'eventsTable.php') ? 'is-active' : '' ?>">All Requests</a>
+                            <a href="usersTable.php" class="nav-link <?= ($currentScript === 'usersTable.php') ? 'is-active' : '' ?>">Employees</a>
+                        <?php else: ?>
+                            <a href="eventsTable.php" class="nav-link <?= ($currentScript === 'eventsTable.php') ? 'is-active' : '' ?>">My Requests</a>
+                        <?php endif; ?>
+                    </nav>
                 <?php endif; ?>
             </div>
-            <div class="d-flex align-items-center gap-2">
+
+            <div class="masthead__actions">
                 <?php if (is_authenticated()): ?>
                     <?php $user = current_user(); ?>
-                    <span class="navbar-text text-light me-1" style="font-size:0.85rem;">
-                        👋 <strong><?= h($user->getUsername()) ?></strong>
-                        <span class="badge ms-1" style="background:rgba(255,255,255,0.15);color:#c7d2fe;font-size:0.7rem;">
+                    <div class="user-identity d-none d-sm-inline-flex">
+                        <span class="fw-semibold"><?= h($user->getUsername()) ?></span>
+                        <span class="role-tag <?= $user->isAdmin() ? 'role-tag--admin' : 'role-tag--user' ?>">
                             <?= h($user->getRole()) ?>
                         </span>
-                    </span>
-                    <a href="logout.php" class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:#e0e7ff;border:1px solid rgba(255,255,255,0.15);">Logout</a>
+                    </div>
+                    <a href="logout.php" class="btn btn-sm btn-ghost">Sign Out</a>
                 <?php else: ?>
-                    <a href="login.php" class="btn btn-sm" style="background:rgba(255,255,255,0.1);color:#e0e7ff;border:1px solid rgba(255,255,255,0.2);">Login</a>
-                    <a href="register.php" class="btn btn-sm btn-primary">Sign Up</a>
+                    <a href="login.php" class="btn btn-sm btn-ghost">Log In</a>
+                    <a href="register.php" class="btn btn-sm btn-primary">Create Account</a>
                 <?php endif; ?>
             </div>
         </div>
-    </nav>
+
+        <?php if (is_authenticated()): ?>
+            <!-- Mobile nav drawer -->
+            <div class="d-flex d-md-none py-2 gap-1 border-top flex-nowrap" style="border-color: var(--line) !important; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; white-space: nowrap;">
+                <a href="index.php" class="nav-link <?= ($currentScript === 'index.php') ? 'is-active' : '' ?>">Calendar</a>
+                <a href="dashboard.php" class="nav-link <?= ($currentScript === 'dashboard.php') ? 'is-active' : '' ?>">Dashboard</a>
+                <a href="eventsTable.php" class="nav-link <?= ($currentScript === 'eventsTable.php') ? 'is-active' : '' ?>">
+                    <?= ($navUser && $navUser->isAdmin()) ? 'All Requests' : 'My Requests' ?>
+                </a>
+                <?php if ($navUser && $navUser->isAdmin()): ?>
+                    <a href="usersTable.php" class="nav-link <?= ($currentScript === 'usersTable.php') ? 'is-active' : '' ?>">Employees</a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+    </header>
+    <main class="app-container">

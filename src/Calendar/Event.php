@@ -1,5 +1,6 @@
 <?php
 namespace Calendar;
+
 class Event
 {
     private $id;
@@ -12,6 +13,7 @@ class Event
     private $admin_event;
     private $rejectionReason;
     private $created_at;
+
     public function getRejectionReason()
     {
         return $this->rejectionReason;
@@ -80,5 +82,55 @@ class Event
     public function setEnd(string $end)
     {
         $this->end = $end;
+    }
+
+    public function getCreatedAt(): \Datetime
+    {
+        return !empty($this->created_at) ? new \Datetime($this->created_at) : $this->getStart();
+    }
+
+    public function getDurationDays(): int
+    {
+        $startDate = new \DateTime($this->getStart()->format('Y-m-d'));
+        $endDate = new \DateTime($this->getEnd()->format('Y-m-d'));
+        $diff = $startDate->diff($endDate);
+        return (int)$diff->days + 1;
+    }
+
+    public function getFormattedDuration(): string
+    {
+        $startDate = $this->getStart()->format('Y-m-d');
+        $endDate = $this->getEnd()->format('Y-m-d');
+        $startTime = $this->getStart()->format('H:i');
+        $endTime = $this->getEnd()->format('H:i');
+        $isFullDay = ($startTime === '00:00' && $endTime === '23:59');
+
+        if ($startDate === $endDate) {
+            if ($isFullDay) {
+                return '1 Day';
+            } else {
+                $hours = round(($this->getEnd()->getTimestamp() - $this->getStart()->getTimestamp()) / 3600, 1);
+                return $hours . ' Hours';
+            }
+        } else {
+            $days = $this->getDurationDays();
+            return $days . ' Days';
+        }
+    }
+
+    public function getStatusToneClass(): string
+    {
+        if ((int)$this->admin_event === 1) {
+            return 'tone-sea';
+        }
+        switch ($this->status) {
+            case 'Approved':
+                return 'tone-olive';
+            case 'Rejected':
+                return 'tone-rose';
+            case 'Pending':
+            default:
+                return 'tone-clay';
+        }
     }
 }

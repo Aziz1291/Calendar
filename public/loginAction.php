@@ -8,7 +8,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $user = new \Calendar\User();
     if ($user->login($email, $password)) {
-        header('Location: index.php');
+        $currentUser = current_user();
+        if ($currentUser && $currentUser->isAdmin()) {
+            header('Location: dashboard.php');
+        } else {
+            header('Location: index.php');
+        }
         exit();
     } else {
         header('Location: login.php?error=1');

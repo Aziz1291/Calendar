@@ -2,118 +2,196 @@
 session_start();
 require_once '../src/Calendar/bootstrap.php';
 require_once '../src/Calendar/Events.php';
+require_once '../src/Calendar/User.php';
+
+if (!is_authenticated()) {
+    header('Location: login.php');
+    exit;
+}
+
 $pdo = get_pdo();
 $user = current_user();
-$hasSearch = isset($_GET['search']) && !empty($_GET['search']);
-$hasStatus = isset($_GET['status']) && $_GET['status'] !== 'all';
+$hasSearch = isset($_GET['search']) && !empty(trim($_GET['search']));
+$currentStatus = $_GET['status'] ?? 'all';
+$hasStatus = $currentStatus !== 'all';
+
+$eventsModel = new \Calendar\Events($pdo);
 
 if ($user->isAdmin()) {
     if ($hasSearch && $hasStatus) {
-        $events = (new \Calendar\Events($pdo))->filterBySearchAndStatus($_GET['search'], $_GET['status']);
+        $events = $eventsModel->filterBySearchAndStatus(trim($_GET['search']), $currentStatus);
     } elseif ($hasSearch) {
-        $events = (new \Calendar\Events($pdo))->filterBySearch($_GET['search']);
+        $events = $eventsModel->filterBySearch(trim($_GET['search']));
     } elseif ($hasStatus) {
-        $events = (new \Calendar\Events($pdo))->filterByStatus($_GET['status']);
+        $events = $eventsModel->filterByStatus($currentStatus);
     } else {
-        $events = (new \Calendar\Events($pdo))->getAll();
+        $events = $eventsModel->getAll();
     }
 } else {
-    $events = (new \Calendar\Events($pdo))->getAllforUser($user->getId());
+    // Non-admin employee: view strictly own submissions with status & search filtering
+    $statusParam = $hasStatus ? $currentStatus : null;
+    $searchParam = $hasSearch ? trim($_GET['search']) : null;
+    $events = $eventsModel->getEmployeeSubmissions($user->getId(), $statusParam, $searchParam);
 }
 
-render('header.php');
+$eventCount = $events ? count($events) : 0;
+render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Requests']);
 ?>
-<div class="container mt-4">
-    <div class="d-flex flex-wrap align-items-center justify-content-between mb-3">
-        <h1>
-            <?= $user->isAdmin() ? 'Day-Off Requests' : 'My Day-Off Requests' ?> <span
-                class="badge bg-secondary"><?= $events ? count($events) : 0 ?></span>
-        </h1>
-        <?php if ($user->isAdmin()): ?>
-        <form action="" method="get" class="d-flex flex-wrap align-items-center gap-2">
-            <input type="text" name="search" id="search" value="<?= h($_GET['search'] ?? '') ?>" placeholder="Search..."
-                class="form-control" style="width: 200px;">
-            <div class="btn-group" role="group">
-                <input type="radio" class="btn-check" name="status" id="all" value="all" <?= (!isset($_GET['status']) || $_GET['status'] === 'all') ? 'checked' : '' ?>>
-                <label class="btn btn-outline-secondary" for="all">All</label>
 
-                <input type="radio" class="btn-check" name="status" id="pending" value="Pending"
-                    <?= (isset($_GET['status']) && $_GET['status'] === 'Pending') ? 'checked' : '' ?>>
-                <label class="btn btn-outline-warning" for="pending">Pending</label>
+<div class="data-table-container">
+    <!-- Session Feedback Alerts -->
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success d-flex align-items-center gap-2 m-3 mb-0">
+            <span>&check;</span>
+            <span><?= h($_SESSION['success']) ?></span>
+        </div>
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
 
-                <input type="radio" class="btn-check" name="status" id="approved" value="Approved"
-                    <?= (isset($_GET['status']) && $_GET['status'] === 'Approved') ? 'checked' : '' ?>>
-                <label class="btn btn-outline-success" for="approved">Approved</label>
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger d-flex align-items-center gap-2 m-3 mb-0">
+            <span>&bull;</span>
+            <span><?= h($_SESSION['error']) ?></span>
+        </div>
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
 
-                <input type="radio" class="btn-check" name="status" id="rejected" value="Rejected"
-                    <?= (isset($_GET['status']) && $_GET['status'] === 'Rejected') ? 'checked' : '' ?>>
-                <label class="btn btn-outline-danger" for="rejected">Rejected</label>
+    <!-- Toolbar -->
+    <div class="table-toolbar">
+        <div class="table-toolbar__title">
+            <h2><?= $user->isAdmin() ? 'Leave &amp; Schedule Matrix' : 'My Leave Requests' ?></h2>
+            <span class="count-badge"><?= $eventCount ?> <?= $eventCount === 1 ? 'record' : 'records' ?></span>
+        </div>
+
+        <form action="" method="GET" class="table-toolbar__filters d-flex align-items-center gap-2 flex-wrap">
+            <input type="text" name="search" id="search"
+                   value="<?= h($_GET['search'] ?? '') ?>"
+                   placeholder="<?= $user->isAdmin() ? 'Filter by title or employee...' : 'Filter by request reason...' ?>"
+                   class="form-control" style="width: 220px; font-size: 0.84rem; padding: 6px 10px;">
+
+            <div class="filter-pills" role="group" aria-label="Status filters">
+                <button type="submit" name="status" value="all"
+                        class="filter-pill-btn <?= ($currentStatus === 'all') ? 'is-active' : '' ?>">All</button>
+                <button type="submit" name="status" value="Pending"
+                        class="filter-pill-btn <?= ($currentStatus === 'Pending') ? 'is-active' : '' ?>">Pending</button>
+                <button type="submit" name="status" value="Approved"
+                        class="filter-pill-btn <?= ($currentStatus === 'Approved') ? 'is-active' : '' ?>">Approved</button>
+                <button type="submit" name="status" value="Rejected"
+                        class="filter-pill-btn <?= ($currentStatus === 'Rejected') ? 'is-active' : '' ?>">Rejected</button>
             </div>
-            <button type="submit" class="btn btn-secondary">Filter</button>
+
+            <a href="add.php" class="btn btn-primary btn-sm ms-auto">
+                <?= $user->isAdmin() ? '+ Create Event' : '+ Request Day Off' ?>
+            </a>
         </form>
-        <?php endif; ?>
     </div>
 
-    <?php if (!$events): ?>
-        <div class="alert alert-info">
-            <?= $user->isAdmin() ? 'No day-off requests found' : 'You have no day-off requests' ?>
+    <!-- Table Body -->
+    <?php if (empty($events)): ?>
+        <div class="p-5 text-center">
+            <div class="text-muted mb-3" style="font-size: 0.95rem;">
+                <?= $user->isAdmin()
+                    ? 'No leave records found matching your filters.'
+                    : ($hasStatus || $hasSearch
+                        ? 'No leave requests match the selected status or search filter.'
+                        : 'You have not submitted any leave requests yet.') ?>
+            </div>
+            <a href="add.php" class="btn btn-primary btn-sm">
+                <?= $user->isAdmin() ? '+ Create Company Event' : '+ Submit New Request' ?>
+            </a>
         </div>
-        <a href="add.php" class="btn btn-primary">
-            <?= $user->isAdmin() ? 'Create Company Event' : 'Request Day Off' ?>
-        </a>
     <?php else: ?>
-        <table class="table table-striped table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <?php if ($user->isAdmin()): ?>
-                        <th>Employee</th>
-                    <?php endif; ?>
-                    <th>
-                        <?= $user->isAdmin() ? 'Request Title' : 'Reason' ?>
-                    </th>
-                    <th>Start time</th>
-                    <th>End time</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($events as $event): ?>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
-                        <?php if ($user->isAdmin()):
+                        <?php if ($user->isAdmin()): ?>
+                            <th>Employee</th>
+                        <?php endif; ?>
+                        <th>Reason / Title</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($events as $event):
+                        $requesterName = '';
+                        if ($user->isAdmin()) {
                             $eventCreator = new \Calendar\User();
                             $eventCreator->getUser($event->getUserId());
-                            ?>
-                            <td><?= $eventCreator->getUsername() ?></td>
-                        <?php endif; ?>
-                        <td><?= $event->getName() ?></td>
-                        <td><?= $event->getStart()->format('Y-m-d H:i') ?></td>
-                        <td><?= $event->getEnd()->format('Y-m-d H:i') ?></td>
-                        <td><span class="<?= $event->getStatus() ?>"><?= $event->getStatus() ?></span></td>
-                        <td>
-                            <?php if ((!$user->isAdmin() && $event->getStatus() === 'Pending') || ($user->isAdmin() && (int) $event->getAdminEvent() === 1)): ?>
-                                <a href="edit.php?id=<?= $event->getId() ?>" class="btn btn-primary btn-sm">Edit</a>
-                                <a href="delete.php?id=<?= $event->getId() ?>" class="btn btn-danger btn-sm">Delete</a>
-                            <?php elseif ($user->isAdmin()): ?>
-                                <?php if ($event->getStatus() === 'Pending'): ?>
-                                    <a href="AdminActionApprove.php?id=<?= $event->getId() ?>"
-                                        class="btn btn-success btn-sm">Approve</a>
-                                    <a href="AdminActionReject.php?id=<?= $event->getId() ?>"
-                                        class="btn btn-danger btn-sm">Reject</a>
-                                <?php elseif ($event->getStatus() === 'Approved'): ?>
-                                        <a href="AdminActionReject.php?id=<?= $event->getId() ?>"
-                                        class="btn btn-danger btn-sm">Reject</a>
-                                <?php elseif ($event->getStatus() === 'Rejected'): ?>
-                                    <a href="AdminActionApprove.php?id=<?= $event->getId() ?>"
-                                        class="btn btn-success btn-sm">Approve</a>
-                                <?php endif; ?>
+                            $requesterName = $eventCreator->getUsername();
+                        }
+                        $statusToneClass = $event->getStatusToneClass();
+                    ?>
+                        <tr>
+                            <?php if ($user->isAdmin()): ?>
+                                <td>
+                                    <div class="avatar-cell">
+                                        <span class="avatar-badge"><?= strtoupper(substr($requesterName, 0, 2)) ?></span>
+                                        <span class="fw-semibold"><?= h($requesterName) ?></span>
+                                    </div>
+                                </td>
                             <?php endif; ?>
-                            <a href="event.php?id=<?= $event->getId() ?>" class="btn btn-info btn-sm">View</a>
-                        </td>
-                    </tr>
-                <?php endforeach ?>
-            </tbody>
-        </table>
+                            <td>
+                                <div class="fw-semibold text-dark"><?= h($event->getName()) ?></div>
+                                <?php if ((int)$event->getAdminEvent() === 1): ?>
+                                    <span class="badge" style="background: var(--tone-sea-bg); color: var(--tone-sea-text); border: 1px solid var(--tone-sea-border); font-size: 10px;">
+                                        Company Wide
+                                    </span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="table-time">
+                                <?= $event->getStart()->format('Y-m-d H:i') ?>
+                            </td>
+                            <td class="table-time">
+                                <?= $event->getEnd()->format('Y-m-d H:i') ?>
+                            </td>
+                            <td class="table-time">
+                                <span class="font-monospace" style="font-size: 0.8rem; color: var(--ink-secondary);">
+                                    <?= $event->getFormattedDuration() ?>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="status-pill <?= $event->getStatus() ?> <?= $statusToneClass ?>">
+                                    <?= $event->getStatus() ?>
+                                </span>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <?php if ($user->isAdmin()): ?>
+                                        <?php if ($event->getStatus() === 'Pending'): ?>
+                                            <a href="AdminActionApprove.php?id=<?= $event->getId() ?>&from=eventsTable"
+                                               class="btn btn-sm btn-success" title="Approve">Approve</a>
+                                            <a href="AdminActionReject.php?id=<?= $event->getId() ?>&from=eventsTable"
+                                               class="btn btn-sm btn-danger" title="Reject">Reject</a>
+                                        <?php elseif ($event->getStatus() === 'Approved'): ?>
+                                            <a href="AdminActionReject.php?id=<?= $event->getId() ?>&from=eventsTable"
+                                               class="btn btn-sm btn-danger" title="Revoke Approval">Reject</a>
+                                        <?php elseif ($event->getStatus() === 'Rejected'): ?>
+                                            <a href="AdminActionApprove.php?id=<?= $event->getId() ?>&from=eventsTable"
+                                               class="btn btn-sm btn-success" title="Approve Request">Approve</a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+
+                                    <?php if ((!$user->isAdmin() && $event->getStatus() === 'Pending') || ($user->isAdmin() && (int)$event->getAdminEvent() === 1)): ?>
+                                        <a href="edit.php?id=<?= $event->getId() ?>" class="btn btn-sm btn-secondary">Edit</a>
+                                        <a href="delete.php?id=<?= $event->getId() ?>&from=eventsTable"
+                                           class="btn btn-sm btn-danger"
+                                           onclick="return confirm('Are you sure you want to delete this event?');">Delete</a>
+                                    <?php endif; ?>
+
+                                    <a href="event.php?id=<?= $event->getId() ?>" class="btn btn-sm btn-ghost">View</a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php endif; ?>
 </div>
+
 <?php render('footer.php'); ?>

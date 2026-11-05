@@ -1,13 +1,17 @@
 <?php
 namespace Calendar;
+
 require_once 'Event.php';
+
 class Events
 {
     private $pdo;
+
     public function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
     }
+
     /**
      * Get events between two dates
      * @return array
@@ -25,6 +29,7 @@ class Events
         $result = $statement->fetchAll();
         return $result;
     }
+
     /**
      * Get events between two dates grouped by day
      * Handles multi-day events by showing them on each day they span
@@ -64,20 +69,23 @@ class Events
         }
         return $days;
     }
+
     public function delete(int $id)
     {
         $req = $this->pdo->prepare("DELETE FROM events WHERE id = ?");
         $req->execute([$id]);
     }
+
     /**
      * Find an event by its ID
-     * @return array|null
+     * @return Event|null
      * @param int $id
      * @throws \Exception if event not found
      */
     public function find(int $id): ?Event
     {
-        $statement = $this->pdo->query("SELECT * FROM events WHERE id = $id LIMIT 1");
+        $statement = $this->pdo->prepare("SELECT * FROM events WHERE id = ? LIMIT 1");
+        $statement->execute([$id]);
         $statement->setFetchMode(\PDO::FETCH_CLASS, \Calendar\Event::class);
         $result = $statement->fetch();
         if (!$result) {
@@ -85,20 +93,48 @@ class Events
         }
         return $result;
     }
+
     public function getAll()
     {
-        $statement = $this->pdo->query("SELECT * FROM events");
+        $statement = $this->pdo->query("SELECT * FROM events ORDER BY start DESC");
         $statement->setFetchMode(\PDO::FETCH_CLASS, \Calendar\Event::class);
         return $statement->fetchAll();
     }
+
     public function getAllforUser($id)
     {
-        $statement = ("SELECT * FROM events where user_id=? or admin_event=1");
+        $statement = "SELECT * FROM events WHERE user_id=? OR admin_event=1 ORDER BY start DESC";
         $req = $this->pdo->prepare($statement);
         $req->execute([$id]);
         $req->setFetchMode(\PDO::FETCH_CLASS, \Calendar\Event::class);
         return $req->fetchAll();
     }
+
+    /**
+     * Retrieve exclusively an employee's own leave submissions with optional status & search filtering
+     */
+    public function getEmployeeSubmissions(int $userId, ?string $status = null, ?string $search = null): array
+    {
+        $sql = "SELECT * FROM events WHERE user_id = :userId";
+        $params = [':userId' => $userId];
+
+        if ($status && in_array($status, ['Pending', 'Approved', 'Rejected'])) {
+            $sql .= " AND status = :status";
+            $params[':status'] = $status;
+        }
+
+        if ($search !== null && $search !== '') {
+            $sql .= " AND (name LIKE :search OR description LIKE :search)";
+            $params[':search'] = '%' . $search . '%';
+        }
+
+        $sql .= " ORDER BY start DESC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        $stmt->setFetchMode(\PDO::FETCH_CLASS, \Calendar\Event::class);
+        return $stmt->fetchAll();
+    }
+
     public function hydrate(Event $event, array $data)
     {
         $event->setName($data['name']);
@@ -115,13 +151,14 @@ class Events
 
         return $event;
     }
+
     /**
      * Create an event
      * @param Event $event
      */
     public function create(Event $event)
     {
-        $req = $this->pdo->prepare("INSERT into events (name, description, start, end, user_id, admin_event, status,rejectionReason) VALUES (?,?,?,?,?,?,?,?)");
+        $req = $this->pdo->prepare("INSERT INTO events (name, description, start, end, user_id, admin_event, status, rejectionReason) VALUES (?,?,?,?,?,?,?,?)");
         $req->execute([
             $event->getName(),
             $event->getDescription(),
@@ -133,13 +170,14 @@ class Events
             $event->getRejectionReason() ?: '',
         ]);
     }
+
     /**
      * Update an event
      * @param Event $event
      */
     public function update(Event $event)
     {
-        $req = $this->pdo->prepare("UPDATE events SET name = ?, description = ?, start = ?, end = ?, admin_event = ?, status = ?,RejectionReason = ? WHERE id = ?");
+        $req = $this->pdo->prepare("UPDATE events SET name = ?, description = ?, start = ?, end = ?, admin_event = ?, status = ?, rejectionReason = ? WHERE id = ?");
         $req->execute([
             $event->getName(),
             $event->getDescription(),
@@ -151,30 +189,38 @@ class Events
             $event->getId()
         ]);
     }
-    public function filterByStatus($status, )
+
+    public function filterByStatus($status)
     {
-        $statement = $this->pdo->query("SELECT * FROM events WHERE status = '$status'");
+        $statement = $this->pdo->prepare("SELECT * FROM events WHERE status = ? ORDER BY start DESC");
+        $statement->execute([$status]);
         $statement->setFetchMode(\PDO::FETCH_CLASS, \Calendar\Event::class);
         return $statement->fetchAll();
     }
+
     public function countByUserId($userId)
     {
         $statement = $this->pdo->prepare("SELECT COUNT(*) as count FROM events WHERE user_id = ?");
         $statement->execute([$userId]);
         $result = $statement->fetch();
-        return $result['count'];
+        return (int)$result['count'];
     }
+
     public function filterBySearch($search)
     {
-        $statement = $this->pdo->query("SELECT events.* FROM events INNER JOIN users ON events.user_id = users.id WHERE users.username LIKE '%$search%'");
+        $statement = $this->pdo->prepare("SELECT events.* FROM events LEFT JOIN users ON events.user_id = users.id WHERE users.username LIKE ? OR events.name LIKE ? ORDER BY events.start DESC");
+        $param = '%' . $search . '%';
+        $statement->execute([$param, $param]);
         $statement->setFetchMode(\PDO::FETCH_CLASS, \Calendar\Event::class);
         return $statement->fetchAll();
     }
+
     public function filterBySearchAndStatus($search, $status)
     {
-        $statement = $this->pdo->query("SELECT events.* FROM events INNER JOIN users ON events.user_id = users.id WHERE users.username LIKE '%$search%' AND events.status = '$status'");
+        $statement = $this->pdo->prepare("SELECT events.* FROM events LEFT JOIN users ON events.user_id = users.id WHERE (users.username LIKE ? OR events.name LIKE ?) AND events.status = ? ORDER BY events.start DESC");
+        $param = '%' . $search . '%';
+        $statement->execute([$param, $param, $status]);
         $statement->setFetchMode(\PDO::FETCH_CLASS, \Calendar\Event::class);
         return $statement->fetchAll();
     }
 }
-?>
