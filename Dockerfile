@@ -29,3 +29,6 @@ RUN chown -R www-data:www-data /var/www/html
 
 # Expose HTTP port
 EXPOSE 80
+
+# Show the demo notice before public PHP routes execute.
+RUN echo 'auto_prepend_file=/var/www/html/src/Calendar/demo-gate.php' > /usr/local/etc/php/conf.d/demo-gate.ini

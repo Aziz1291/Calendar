@@ -84,7 +84,7 @@
         </div>
 
         <div class="text-center mt-3" style="font-size: 0.78rem; color: var(--muted-light);">
-            &copy; <?= date('Y') ?> Calendar Manager &middot; Enterprise Leave Management
+            &copy; <?= date('Y') ?> Calendar Manager &middot; Enterprise Leave Management &middot; <a href="privacy.php">Privacy and cookies</a>
         </div>
     </div>
 
