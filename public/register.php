@@ -15,7 +15,7 @@
 <body class="auth-page">
     <div class="auth-wrapper">
         <div class="auth-brand">
-            <span class="brand-icon">📅</span>
+            
             <h1>Calendar Manager</h1>
             <p>Join Your Team Scheduling Workspace</p>
         </div>

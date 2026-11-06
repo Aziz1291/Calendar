@@ -20,7 +20,7 @@ $currentScript = basename($_SERVER['PHP_SELF'] ?? '');
         <div class="masthead__inner">
             <div class="d-flex align-items-center gap-3">
                 <a href="index.php" class="brand">
-                    <span>📅</span>
+                    
                     <span>Calendar Manager</span>
                     <span class="brand__badge">Suite</span>
                 </a>

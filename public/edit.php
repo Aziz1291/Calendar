@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once('../src/Calendar/bootstrap.php');
 
 if (!is_authenticated()) {
@@ -81,7 +81,7 @@ render('header.php', ['title' => 'Edit ' . $event->getName()]);
     <?php endif; ?>
 
     <form action="" method="POST">
-        <?= render('Calendar/form.php', ['data' => $data, 'errors' => $errors]) ?>
+        <?= render('calendar/form.php', ['data' => $data, 'errors' => $errors]) ?>
 
         <div class="form-actions justify-content-between">
             <div class="d-flex align-items-center gap-2">

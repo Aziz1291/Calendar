@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once '../src/Calendar/bootstrap.php';
 require_once '../src/Calendar/Events.php';
 require_once '../src/Calendar/User.php';
@@ -198,7 +198,7 @@ render('header.php', ['title' => 'Dashboard']);
                 </div>
                 <div class="dashboard-panel__body d-flex flex-column gap-2">
                     <a href="index.php" class="quick-action-link">
-                        <span>📅 Monthly Architectural Calendar</span>
+                        <span>Monthly Architectural Calendar</span>
                         <span>&rarr;</span>
                     </a>
                     <a href="eventsTable.php" class="quick-action-link">

@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once('../src/Calendar/bootstrap.php');
 require_once('../src/Calendar/Events.php');
 require_once('../src/Calendar/Event.php');

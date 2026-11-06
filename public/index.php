@@ -215,7 +215,7 @@ require_once('../views/header.php');
                                 </span>
                             </div>
                             <div class="mobile-feed-card__meta">
-                                <span class="mobile-feed-card__time">📅 <?= $dateFormatted ?></span>
+                                <span class="mobile-feed-card__time"><?= $dateFormatted ?></span>
                                 <span>&middot;</span>
                                 <span><?= $isAdminEvt ? 'Company Milestone' : 'Personal Leave' ?></span>
                             </div>

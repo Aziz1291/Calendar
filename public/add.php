@@ -1,5 +1,5 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once '../src/Calendar/bootstrap.php';
 
 if (!is_authenticated()) {
@@ -74,7 +74,7 @@ render('header.php', ['title' => $pageTitle]);
     <?php endif; ?>
 
     <form action="" method="POST">
-        <?= render('Calendar/form.php', ['data' => $data, 'errors' => $errors]) ?>
+        <?= render('calendar/form.php', ['data' => $data, 'errors' => $errors]) ?>
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">

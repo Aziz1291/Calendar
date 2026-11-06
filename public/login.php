@@ -15,7 +15,7 @@
 <body class="auth-page">
     <div class="auth-wrapper">
         <div class="auth-brand">
-            <span class="brand-icon">📅</span>
+            
             <h1>Calendar Manager</h1>
             <p>Editorial Team Scheduling &amp; Leave Suite</p>
         </div>
@@ -63,14 +63,14 @@
                     <div class="demo-accounts__grid">
                         <div class="demo-account-pill">
                             <div class="demo-account-pill__info">
-                                <span class="demo-account-pill__role role-admin">&#x1F6E1;&#xFE0F; HR Admin</span>
+                                <span class="demo-account-pill__role role-admin">HR Admin</span>
                                 <span class="demo-account-pill__name">Admin Lead (<code>admin1@company.com</code>)</span>
                             </div>
                             <button type="button" class="demo-account-pill__btn" onclick="fillCalendarDemo('admin1@company.com', 'password')">Use</button>
                         </div>
                         <div class="demo-account-pill">
                             <div class="demo-account-pill__info">
-                                <span class="demo-account-pill__role role-user">&#x1F464; Employee</span>
+                                <span class="demo-account-pill__role role-user">Employee</span>
                                 <span class="demo-account-pill__name">John Employee (<code>john@company.com</code>)</span>
                             </div>
                             <button type="button" class="demo-account-pill__btn" onclick="fillCalendarDemo('john@company.com', 'password')">Use</button>
