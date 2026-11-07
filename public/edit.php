@@ -39,7 +39,7 @@ $data = [
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = $_POST;
     $validator = new Calendar\EventValidator($data);
-    $errors = $validator->validates($data);
+    $errors = $validator->validates($data, current_user()->isAdmin());
     if (empty($errors)) {
         $events->hydrate($event, $data);
         $events->update($event);

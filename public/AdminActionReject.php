@@ -34,8 +34,18 @@ try {
 $from = $_GET['from'] ?? $_POST['from'] ?? '';
 $returnUrl = ($from === 'dashboard') ? 'dashboard.php' : 'eventsTable.php';
 
+$reasonError = null;
+$reason = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $reason = trim($_POST['rejectionReason'] ?? '');
+    $reason = trim((string) ($_POST['rejectionReason'] ?? ''));
+    // The reason is required on the server too, not only by the browser.
+    if (mb_strlen($reason) < 3) {
+        $reasonError = 'Give a reason of at least 3 characters.';
+    } elseif (mb_strlen($reason) > 1000) {
+        $reasonError = 'The reason must be 1000 characters or fewer.';
+    }
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $reasonError === null) {
     $event->setRejectionReason($reason);
     $event->setStatus('Rejected');
     $events->update($event);
@@ -91,8 +101,11 @@ render('header.php', ['title' => 'Decline Request: ' . $event->getName()]);
             <label for="rejectionReason" class="form-label">
                 Reason for Rejection *
             </label>
-            <textarea name="rejectionReason" id="rejectionReason" rows="4" class="form-control"
-                      placeholder="e.g. Schedule conflicts with core team release milestone, or insufficient remaining PTO allowance..." required></textarea>
+            <?php if ($reasonError): ?>
+                <div class="alert alert-danger py-2" role="alert"><?= h($reasonError) ?></div>
+            <?php endif; ?>
+            <textarea name="rejectionReason" id="rejectionReason" rows="4" class="form-control" minlength="3" maxlength="1000"
+                      placeholder="e.g. Schedule conflicts with core team release milestone, or insufficient remaining PTO allowance..." required><?= h($reason) ?></textarea>
             <div class="form-text">This feedback will be recorded in the employee's dossier and audit log.</div>
         </div>
 

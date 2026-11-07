@@ -24,7 +24,8 @@ $errors = [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = $_POST;
     $validator = new Calendar\EventValidator($data);
-    $errors = $validator->validates($_POST);
+    // Employees request time off from today on; admins may record past company events.
+    $errors = $validator->validates($_POST, $user->isAdmin());
     if (empty($errors)) {
         $events = new Calendar\Events(get_pdo());
         $event = $events->hydrate(new Calendar\Event(), $data);
