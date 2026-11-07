@@ -1586,3 +1586,59 @@ a:hover {
     display: flex !important;
   }
 }
+
+/* ---- Phone layout (up to 640px): tables become stacked cards, 44px tap targets ---- */
+@media (max-width: 640px) {
+  .table-responsive { overflow: visible; }
+  .table, .table tbody { display: block; width: 100%; }
+  .table thead {
+    position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+  }
+  .table tbody tr {
+    display: block;
+    margin: 12px;
+    padding: 6px 14px 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+  }
+  .table tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+    text-align: right;
+  }
+  .table tbody td:first-child { border-top: 0; }
+  .table tbody td::before {
+    content: attr(data-label);
+    flex: 0 0 auto;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+  }
+  .table tbody td.td-actions { display: block; padding-top: 12px; }
+  .table tbody td.td-actions::before { display: none; }
+  .table-actions { flex-wrap: wrap; gap: 8px; }
+  .table-actions > .btn, .table-actions > form { flex: 1 1 calc(50% - 8px); }
+  .table-actions > form button { width: 100%; }
+
+  .btn, .btn-sm, .filter-pills .filter-pill-btn, .segmented-control .btn {
+    min-height: 44px;
+  }
+  .segmented-control .btn { min-width: 44px; padding-left: 14px; padding-right: 14px; }
+  .table-toolbar__filters .form-control { width: 100% !important; min-height: 44px; }
+  .filter-pills { width: 100%; }
+  .filter-pills .filter-pill-btn { flex: 1 1 0; }
+
+  /* The edit page keeps Delete inside the card, under the main buttons */
+  .form-sheet .form-actions { flex-wrap: wrap; }
+  .form-sheet .form-actions > div { width: 100%; }
+  .form-sheet .form-actions > .btn { width: 100%; }
+  .form-sheet .form-actions .btn { flex: 1 1 auto; }
+}

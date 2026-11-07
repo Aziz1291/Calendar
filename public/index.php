@@ -236,9 +236,9 @@ require_once('../views/header.php');
                                 </span>
                                 <div class="d-flex align-items-center gap-2">
                                     <?php if (!$isAdminEvt && $ev['status'] === 'Pending'): ?>
-                                        <a href="<?= $detailUrl ?>" class="btn btn-sm btn-secondary" style="font-size: 0.76rem; padding: 2px 8px;">Edit</a>
+                                        <a href="<?= $detailUrl ?>" class="btn btn-sm btn-secondary">Edit</a>
                                     <?php endif; ?>
-                                    <a href="<?= $viewUrl ?>" class="btn btn-sm btn-ghost" style="font-size: 0.76rem; padding: 2px 8px;">View</a>
+                                    <a href="<?= $viewUrl ?>" class="btn btn-sm btn-ghost">View</a>
                                 </div>
                             </div>
                         </div>

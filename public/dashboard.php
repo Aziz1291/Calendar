@@ -143,17 +143,17 @@ render('header.php', ['title' => 'Dashboard']);
                             ?>
                                 <tr>
                                     <?php if ($isAdmin): ?>
-                                        <td class="fw-semibold">
+                                        <td class="fw-semibold" data-label="Employee">
                                             <div class="avatar-cell">
                                                 <span class="avatar-badge"><?= strtoupper(substr($requesterName, 0, 2)) ?></span>
                                                 <span><?= h($requesterName) ?></span>
                                             </div>
                                         </td>
                                     <?php endif; ?>
-                                    <td>
+                                    <td data-label="Request">
                                         <div class="fw-medium text-dark"><?= h($req->getName()) ?></div>
                                     </td>
-                                    <td>
+                                    <td data-label="Dates">
                                         <div class="table-time">
                                             <?= $req->getStart()->format('M j, Y') ?>
                                             <?php if ($req->getStart()->format('Y-m-d') !== $req->getEnd()->format('Y-m-d')): ?>
@@ -161,7 +161,7 @@ render('header.php', ['title' => 'Dashboard']);
                                             <?php endif; ?>
                                         </div>
                                     </td>
-                                    <td>
+                                    <td data-label="Actions" class="td-actions">
                                         <div class="table-actions">
                                             <?php if ($isAdmin): ?>
                                                 <?= action_button('AdminActionApprove.php', ['id' => $req->getId(), 'from' => 'dashboard'], 'Approve', 'btn btn-sm btn-success', 'Approve this request?') ?>

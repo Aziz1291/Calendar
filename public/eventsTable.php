@@ -128,14 +128,14 @@ render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Request
                     ?>
                         <tr>
                             <?php if ($user->isAdmin()): ?>
-                                <td>
+                                <td data-label="Employee">
                                     <div class="avatar-cell">
                                         <span class="avatar-badge"><?= strtoupper(substr($requesterName, 0, 2)) ?></span>
                                         <span class="fw-semibold"><?= h($requesterName) ?></span>
                                     </div>
                                 </td>
                             <?php endif; ?>
-                            <td>
+                            <td data-label="Request">
                                 <div class="fw-semibold text-dark"><?= h($event->getName()) ?></div>
                                 <?php if ((int)$event->getAdminEvent() === 1): ?>
                                     <span class="badge" style="background: var(--tone-sea-bg); color: var(--tone-sea-text); border: 1px solid var(--tone-sea-border); font-size: 10px;">
@@ -143,23 +143,23 @@ render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Request
                                     </span>
                                 <?php endif; ?>
                             </td>
-                            <td class="table-time">
+                            <td class="table-time" data-label="Start">
                                 <?= $event->getStart()->format('Y-m-d H:i') ?>
                             </td>
-                            <td class="table-time">
+                            <td class="table-time" data-label="End">
                                 <?= $event->getEnd()->format('Y-m-d H:i') ?>
                             </td>
-                            <td class="table-time">
+                            <td class="table-time" data-label="Duration">
                                 <span class="font-monospace" style="font-size: 0.8rem; color: var(--ink-secondary);">
                                     <?= $event->getFormattedDuration() ?>
                                 </span>
                             </td>
-                            <td>
+                            <td data-label="Status">
                                 <span class="status-pill <?= $event->getStatus() ?> <?= $statusToneClass ?>">
                                     <?= $event->getStatus() ?>
                                 </span>
                             </td>
-                            <td>
+                            <td data-label="Actions" class="td-actions">
                                 <div class="table-actions">
                                     <?php if ($user->isAdmin()): ?>
                                         <?php if ($event->getStatus() === 'Pending'): ?>
