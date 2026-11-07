@@ -1641,6 +1641,14 @@ a:hover {
   .form-sheet .form-actions > div { width: 100%; }
   .form-sheet .form-actions > .btn { width: 100%; }
   .form-sheet .form-actions .btn { flex: 1 1 auto; }
+
+  /* 44px tap targets: header nav and brand, form fields, "Back to" links, footer link */
+  .nav-link, .brand, .app-footer__text a, a.text-muted[style*="0.85rem"] {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .form-control, .form-select { min-height: 44px; }
 }
 
 .search-label {

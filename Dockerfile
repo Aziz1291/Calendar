@@ -17,6 +17,9 @@ RUN printf 'display_errors=Off\ndisplay_startup_errors=Off\nlog_errors=On\nerror
 # Enable Apache Mod Rewrite
 RUN a2enmod rewrite
 
+# Unknown URLs show the app's 404 page (status stays 404)
+RUN echo 'ErrorDocument 404 /404.php' > /etc/apache2/conf-available/app-404.conf && a2enconf app-404
+
 # Configure Apache DocumentRoot to point to the 'public/' directory instead of the root
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
