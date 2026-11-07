@@ -1,5 +1,6 @@
 <?php
 // Applied by PHP before every public PHP entry point in the deployed container.
+require_once __DIR__ . '/error-page.php';
 header('X-Robots-Tag: noindex, nofollow', true);
 $page = basename($_SERVER['SCRIPT_NAME'] ?? '');
 if ($page === 'privacy.php') { return; }

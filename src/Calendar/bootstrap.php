@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/error-page.php';
 require_once __DIR__ . '/../../autoload.php';
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

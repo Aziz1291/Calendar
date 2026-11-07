@@ -137,8 +137,8 @@ class Events
 
     public function hydrate(Event $event, array $data)
     {
-        $event->setName($data['name']);
-        $event->setDescription($data['description'] ?? '');
+        $event->setName(trim($data['name']));
+        $event->setDescription(trim($data['description'] ?? ''));
 
         $startDate = $data['start_date'];
         $endDate = !empty($data['end_date']) ? $data['end_date'] : $startDate;

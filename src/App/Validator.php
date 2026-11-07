@@ -5,6 +5,15 @@ class Validator
 {
     private $data;
     protected $errors;
+    // Labels shown to users instead of the internal field names.
+    private const LABELS = [
+        'name' => 'Title',
+        'description' => 'Notes',
+        'start_date' => 'Start date',
+        'end_date' => 'End date',
+        'start_time' => 'Start time',
+        'end_time' => 'End time',
+    ];
     public function __construct(array $data)
     {
         $this->data = $data;
@@ -22,17 +31,30 @@ class Validator
     }
     public function validate(string $field, string $method, ...$parameters): bool
     {
-        if (!isset($this->data[$field])) {
-            $this->errors[$field] = "Field {$field} is required";
+        if (!isset($this->data[$field]) || !is_string($this->data[$field])) {
+            $this->errors[$field] = $this->label($field) . ' is required.';
             return false;
         } else {
             return call_user_func([$this, $method], $field, ...$parameters);
         }
     }
+    protected function label(string $field): string
+    {
+        return self::LABELS[$field] ?? ucfirst(str_replace('_', ' ', $field));
+    }
     public function minLength(string $field, int $length)
     {
-        if (mb_strlen($field) < $length) {
-            $this->errors[$field] = "Field {$field} must be at least {$length} characters long";
+        // Measure the submitted value, ignoring surrounding spaces.
+        if (mb_strlen(trim($this->data[$field])) < $length) {
+            $this->errors[$field] = $this->label($field) . " must be at least {$length} characters long.";
+            return false;
+        }
+        return true;
+    }
+    public function maxLength(string $field, int $length)
+    {
+        if (mb_strlen(trim($this->data[$field])) > $length) {
+            $this->errors[$field] = $this->label($field) . " must be {$length} characters or fewer.";
             return false;
         }
         return true;
@@ -40,7 +62,7 @@ class Validator
     public function date(string $field)
     {
         if (\DATETIME::createFromFormat('Y-m-d', $this->data[$field]) === false) {
-            $this->errors[$field] = "Field {$field} is not a valid date";
+            $this->errors[$field] = $this->label($field) . ' is not a valid date.';
             return false;
         }
         return true;
@@ -48,7 +70,7 @@ class Validator
     public function time(string $field)
     {
         if (\DATETIME::createFromFormat('H:i', $this->data[$field]) === false) {
-            $this->errors[$field] = "Field {$field} is not a valid time";
+            $this->errors[$field] = $this->label($field) . ' is not a valid time.';
             return false;
         }
         return true;
@@ -59,7 +81,7 @@ class Validator
             $start = \DATETIME::createFromFormat('H:i', $this->data[$startField]);
             $end = \DATETIME::createFromFormat('H:i', $this->data[$endField]);
             if ($start->getTimestamp() > $end->getTimestamp()) {
-                $this->errors[$startField] = "Field {$startField} must be before {$endField}";
+                $this->errors[$startField] = $this->label($startField) . ' must be before ' . strtolower($this->label($endField)) . '.';
                 return false;
             }
             return true;

@@ -10,7 +10,10 @@ if (!is_authenticated()) {
 
 $pdo = get_pdo();
 $eventsModel = new \Calendar\Events($pdo);
-$month = new \Calendar\Month($_GET['month'] ?? null, $_GET['year'] ?? null);
+// Anything that is not a whole number (for example ?month=abc) falls back to the current month.
+$monthParam = filter_var($_GET['month'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 12]]);
+$yearParam = filter_var($_GET['year'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1970, 'max_range' => 2100]]);
+$month = new \Calendar\Month($monthParam === false ? null : $monthParam, $yearParam === false ? null : $yearParam);
 $weeks = $month->getWeeks();
 $start = $month->getStartingDay();
 $start = $start->format('N') === '1' ? $start : $start->modify('last monday');

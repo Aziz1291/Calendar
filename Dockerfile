@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y \
 
 # Install PDO MySQL and other commonly used extensions
 RUN docker-php-ext-install pdo pdo_mysql gd
+# Never show PHP errors to visitors; send them to the container log instead.
+RUN printf 'display_errors=Off\ndisplay_startup_errors=Off\nlog_errors=On\nerror_log=/dev/stderr\nexpose_php=Off\n' > /usr/local/etc/php/conf.d/zz-production.ini
 
 # Enable Apache Mod Rewrite
 RUN a2enmod rewrite

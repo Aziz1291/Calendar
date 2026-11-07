@@ -13,7 +13,10 @@ class EventValidator extends Validator
     public function validates(array $data): array
     {
         parent::validates($data);
-        $this->validate('name', 'minLength', 3);
+        if ($this->validate('name', 'minLength', 3)) {
+            // events.name is VARCHAR(255); longer titles used to crash the insert.
+            $this->validate('name', 'maxLength', 255);
+        }
         $this->validate('start_date', 'date');
 
         if (!empty($data['end_date'])) {

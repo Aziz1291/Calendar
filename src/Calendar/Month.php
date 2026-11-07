@@ -13,7 +13,7 @@ class Month {
         if ($month === null || $month < 1 || $month > 12) {
             $month=intval(date("m"));
         }
-        if($year===null){
+        if ($year === null || $year < 1970 || $year > 2100) {
             $year=intval(date("Y"));
         }
         $this->month = $month;
