@@ -17,11 +17,11 @@
         <div class="auth-brand">
             
             <h1>Calendar Manager</h1>
-            <p>Editorial Team Scheduling &amp; Leave Suite</p>
+            <p>Team calendar and leave requests</p>
         </div>
 
         <div class="auth-card">
-            <h2>Sign In to Workspace</h2>
+            <h2>Sign in</h2>
 
             <?php if (isset($_GET['error']) && $_GET['error'] === '1'): ?>
                 <div class="alert alert-danger d-flex align-items-center gap-2">

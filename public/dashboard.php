@@ -59,17 +59,15 @@ render('header.php', ['title' => 'Dashboard']);
     <div class="dashboard-head">
         <div class="dashboard-head__info">
             <h1 class="mb-0">
-                <?= $isAdmin ? 'Team Leave & Scheduling Cockpit' : 'My Leave & Schedule Hub' ?>
+                Dashboard
             </h1>
             <p>
-                <?= $isAdmin
-                    ? 'Review team leave submissions, manage company milestones, and audit active requests.'
-                    : 'Track your pending requests, scheduled time off, and company-wide calendar events.' ?>
+                <?= $isAdmin ? 'Pending requests and request totals.' : 'Your requests and their status.' ?>
             </p>
         </div>
         <div class="d-flex align-items-center gap-2">
             <a href="eventsTable.php" class="btn btn-secondary">
-                <?= $isAdmin ? 'View All Requests' : 'My Requests' ?>
+                <?= $isAdmin ? 'All Requests' : 'My Requests' ?>
             </a>
             <a href="add.php" class="btn btn-primary">
                 <?= $isAdmin ? '+ Create Company Event' : '+ Request Day Off' ?>
@@ -77,30 +75,30 @@ render('header.php', ['title' => 'Dashboard']);
         </div>
     </div>
 
-    <!-- 4-Tile Editorial Metrics Strip -->
+    <!-- Request totals -->
     <div class="metrics-strip">
         <div class="metric-card metric-card--pending">
-            <div class="metric-card__kicker">Pending Reviews</div>
+            <div class="metric-card__kicker">Pending</div>
             <div class="metric-card__value"><?= $pendingCount ?></div>
-            <div class="metric-card__desc"><?= $isAdmin ? 'Awaiting administrative triage' : 'Under active review' ?></div>
+            <div class="metric-card__desc"><?= $isAdmin ? 'Waiting for your decision' : 'Waiting for a decision' ?></div>
         </div>
 
         <div class="metric-card metric-card--approved">
-            <div class="metric-card__kicker">Approved Leaves</div>
+            <div class="metric-card__kicker">Approved</div>
             <div class="metric-card__value"><?= $approvedCount ?></div>
-            <div class="metric-card__desc">Confirmed on official schedule</div>
+            <div class="metric-card__desc">Time off granted</div>
         </div>
 
         <div class="metric-card metric-card--rejected">
-            <div class="metric-card__kicker">Rejected Requests</div>
+            <div class="metric-card__kicker">Rejected</div>
             <div class="metric-card__value"><?= $rejectedCount ?></div>
-            <div class="metric-card__desc">Declined with stated rationale</div>
+            <div class="metric-card__desc">Declined by an admin</div>
         </div>
 
         <div class="metric-card metric-card--total">
-            <div class="metric-card__kicker">Total Events Recorded</div>
+            <div class="metric-card__kicker">Total requests</div>
             <div class="metric-card__value"><?= $totalCount ?></div>
-            <div class="metric-card__desc"><?= $isAdmin ? 'Cumulative organization log' : 'Your personal lifetime logs' ?></div>
+            <div class="metric-card__desc"><?= $isAdmin ? 'All employees' : 'All of yours' ?></div>
         </div>
     </div>
 
@@ -110,14 +108,14 @@ render('header.php', ['title' => 'Dashboard']);
         <div class="dashboard-panel">
             <div class="dashboard-panel__head">
                 <h3 class="mb-0">
-                    <?= $isAdmin ? 'Pending Approval Stream' : 'My Active Queue' ?>
+                    <?= $isAdmin ? 'Pending requests' : 'My pending requests' ?>
                 </h3>
                 <span class="count-badge"><?= count($pendingEvents) ?> pending</span>
             </div>
             <div class="dashboard-panel__body p-0">
                 <?php if (empty($pendingEvents)): ?>
                     <div class="p-4 text-center text-muted" style="font-size: 0.92rem;">
-                        No pending requests in the review queue. All schedules are up to date!
+                        No pending requests.
                     </div>
                 <?php else: ?>
                     <div class="table-responsive">
@@ -127,8 +125,8 @@ render('header.php', ['title' => 'Dashboard']);
                                 <?php if ($isAdmin): ?>
                                     <th>Employee</th>
                                 <?php endif; ?>
-                                <th>Reason / Title</th>
-                                <th>Schedule Span</th>
+                                <th>Request</th>
+                                <th>Dates</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -183,7 +181,7 @@ render('header.php', ['title' => 'Dashboard']);
             <?php if (count($pendingEvents) > 5): ?>
                 <div class="p-3 text-center border-top" style="border-color: var(--line) !important;">
                     <a href="eventsTable.php?status=Pending" class="btn btn-sm btn-ghost">
-                        View All <?= count($pendingEvents) ?> Pending Requests &rarr;
+                        See all <?= count($pendingEvents) ?> pending requests &rarr;
                     </a>
                 </div>
             <?php endif; ?>
@@ -193,47 +191,27 @@ render('header.php', ['title' => 'Dashboard']);
         <div class="d-flex flex-column gap-3">
             <div class="dashboard-panel">
                 <div class="dashboard-panel__head">
-                    <h3 class="mb-0">Workspace Navigation</h3>
+                    <h3 class="mb-0">Go to</h3>
                 </div>
                 <div class="dashboard-panel__body d-flex flex-column gap-2">
                     <a href="index.php" class="quick-action-link">
-                        <span>Monthly Architectural Calendar</span>
+                        <span>Calendar</span>
                         <span>&rarr;</span>
                     </a>
                     <a href="eventsTable.php" class="quick-action-link">
-                        <span>📋 <?= $isAdmin ? 'All Leave Requests Matrix' : 'My Requests Archive' ?></span>
+                        <span><?= $isAdmin ? 'All Requests' : 'My Requests' ?></span>
                         <span>&rarr;</span>
                     </a>
                     <?php if ($isAdmin): ?>
                         <a href="usersTable.php" class="quick-action-link">
-                            <span>👥 Employee Directory &amp; Roles</span>
+                            <span>Employees</span>
                             <span>&rarr;</span>
                         </a>
                     <?php endif; ?>
                     <a href="add.php" class="quick-action-link">
-                        <span>✏️ <?= $isAdmin ? 'Schedule Company Milestone' : 'Submit Day-Off Request' ?></span>
+                        <span><?= $isAdmin ? 'Create Company Event' : 'Request Day Off' ?></span>
                         <span>&rarr;</span>
                     </a>
-                </div>
-            </div>
-
-            <div class="dashboard-panel">
-                <div class="dashboard-panel__head">
-                    <h3 class="mb-0">System Information</h3>
-                </div>
-                <div class="dashboard-panel__body" style="font-size: 0.85rem; color: var(--muted);">
-                    <div class="d-flex justify-content-between py-1 border-bottom" style="border-color: var(--line) !important;">
-                        <span>Session User</span>
-                        <strong class="text-dark"><?= h($user->getUsername()) ?></strong>
-                    </div>
-                    <div class="d-flex justify-content-between py-1 border-bottom" style="border-color: var(--line) !important;">
-                        <span>Access Level</span>
-                        <span class="role-tag <?= $isAdmin ? 'role-tag--admin' : 'role-tag--user' ?>"><?= h($user->getRole()) ?></span>
-                    </div>
-                    <div class="d-flex justify-content-between py-1">
-                        <span>Environment</span>
-                        <span class="font-monospace">PHP / MySQL SSL</span>
-                    </div>
                 </div>
             </div>
         </div>

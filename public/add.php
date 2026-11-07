@@ -59,11 +59,11 @@ render('header.php', ['title' => $pageTitle]);
     </div>
 
     <div class="form-sheet__head">
-        <h1><?= $user->isAdmin() ? 'Schedule Company Event' : 'Request Leave / Day Off' ?></h1>
+        <h1><?= $user->isAdmin() ? 'Create Company Event' : 'Request Day Off' ?></h1>
         <p>
             <?= $user->isAdmin()
-                ? 'Create an organization-wide event, holiday, or offsite meeting visible to all staff.'
-                : 'Submit a formal leave request. Multi-day requests are reviewed by an administrator.' ?>
+                ? 'Everyone will see this event on the calendar.'
+                : 'An admin will approve or reject your request.' ?>
         </p>
     </div>
 
@@ -84,7 +84,7 @@ render('header.php', ['title' => $pageTitle]);
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-                <?= $user->isAdmin() ? 'Publish Company Event' : 'Submit Leave Request' ?>
+                <?= $user->isAdmin() ? 'Create Event' : 'Submit Request' ?>
             </button>
             <a href="index.php" class="btn btn-secondary">Cancel</a>
         </div>

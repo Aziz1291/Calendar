@@ -21,10 +21,10 @@ try {
 
 // A request the user may not change is reported like a missing one.
 if (!$event || !can_change_event($event, $user)) {
-    $_SESSION['error'] = 'Event not found.';
+    $_SESSION['error'] = 'Request not found.';
 } else {
     $eventsModel->delete($id);
-    $_SESSION['success'] = "Event '{$event->getName()}' was deleted.";
+    $_SESSION['success'] = ((int) $event->getAdminEvent() === 1 ? 'Event' : 'Request') . " '{$event->getName()}' was deleted.";
 }
 
 header('Location: ' . $back);

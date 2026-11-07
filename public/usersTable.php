@@ -42,7 +42,7 @@ render('header.php', ['title' => 'Employee Directory']);
     <!-- Toolbar -->
     <div class="table-toolbar">
         <div class="table-toolbar__title">
-            <h2>Employee Directory &amp; Roles</h2>
+            <h2>Employees</h2>
             <span class="count-badge"><?= $userCount ?> <?= $userCount === 1 ? 'member' : 'members' ?></span>
         </div>
         <div>

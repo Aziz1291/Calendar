@@ -65,30 +65,27 @@ render('header.php', ['title' => 'Decline Request: ' . $event->getName()]);
 <div class="form-sheet" style="max-width: 580px;">
     <div class="mb-3">
         <a href="<?= $returnUrl ?>" class="text-muted" style="font-size: 0.85rem;">
-            &larr; <?= ($from === 'dashboard') ? 'Back to Executive Dashboard' : 'Back to Requests Matrix' ?>
+            &larr; <?= ($from === 'dashboard') ? 'Back to Dashboard' : 'Back to Requests' ?>
         </a>
     </div>
 
     <div class="form-sheet__head">
-        <div class="text-danger fw-bold" style="font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase;">
-            Administrative Action
-        </div>
-        <h1 class="text-danger">Decline Leave Request</h1>
-        <p>Review details and supply a mandatory explanation for employee transparency.</p>
+        <h1 class="text-danger">Reject Request</h1>
+        <p>Give the employee a reason.</p>
     </div>
 
-    <!-- Target Event Summary -->
+    <!-- Request summary -->
     <div class="p-3 mb-4 rounded border" style="background: var(--tint); border-color: var(--line) !important; font-size: 0.88rem;">
         <div class="d-flex justify-content-between mb-2">
-            <span class="text-muted">Target Employee</span>
+            <span class="text-muted">Employee</span>
             <span class="fw-semibold text-dark"><?= h($eventCreator->getUsername()) ?></span>
         </div>
         <div class="d-flex justify-content-between mb-2">
-            <span class="text-muted">Request Reason</span>
+            <span class="text-muted">Request</span>
             <span class="fw-semibold text-dark"><?= h($event->getName()) ?></span>
         </div>
         <div class="d-flex justify-content-between">
-            <span class="text-muted">Schedule Span</span>
+            <span class="text-muted">Dates</span>
             <span class="font-monospace text-dark">
                 <?= $event->getStart()->format('Y-m-d') ?> &rarr; <?= $event->getEnd()->format('Y-m-d') ?>
             </span>
@@ -102,18 +99,18 @@ render('header.php', ['title' => 'Decline Request: ' . $event->getName()]);
 
         <div class="form-group mb-4">
             <label for="rejectionReason" class="form-label">
-                Reason for Rejection *
+                Reason for rejection *
             </label>
             <?php if ($reasonError): ?>
                 <div class="alert alert-danger py-2" role="alert"><?= h($reasonError) ?></div>
             <?php endif; ?>
             <textarea name="rejectionReason" id="rejectionReason" rows="4" class="form-control" minlength="3" maxlength="1000"
-                      placeholder="e.g. Schedule conflicts with core team release milestone, or insufficient remaining PTO allowance..." required><?= h($reason) ?></textarea>
-            <div class="form-text">This feedback will be recorded in the employee's dossier and audit log.</div>
+                      placeholder="e.g. Too many people are away that week" required><?= h($reason) ?></textarea>
+            <div class="form-text">The employee will see this reason on the request.</div>
         </div>
 
         <div class="form-actions justify-content-between">
-            <a href="<?= $returnUrl ?>" class="btn btn-secondary">Cancel &amp; Keep Pending</a>
+            <a href="<?= $returnUrl ?>" class="btn btn-secondary">Cancel</a>
             <button type="submit" class="btn btn-danger">Confirm Rejection</button>
         </div>
     </form>

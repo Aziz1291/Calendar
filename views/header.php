@@ -7,7 +7,7 @@ $currentScript = basename($_SERVER['PHP_SELF'] ?? '');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Calendar Manager demo for scheduling and reviewing time-off requests.">
-    <title><?php echo isset($title) ? h($title) . ' — Calendar Manager' : 'Calendar Manager — Editorial Team Scheduling'; ?></title>
+    <title><?php echo isset($title) ? h($title) . ' — Calendar Manager' : 'Calendar Manager'; ?></title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -22,7 +22,6 @@ $currentScript = basename($_SERVER['PHP_SELF'] ?? '');
                 <a href="index.php" class="brand">
                     
                     <span>Calendar Manager</span>
-                    <span class="brand__badge">Suite</span>
                 </a>
                 <?php if (is_authenticated()): ?>
                     <?php $navUser = current_user(); ?>

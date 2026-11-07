@@ -17,7 +17,7 @@
         <div class="auth-brand">
             
             <h1>Calendar Manager</h1>
-            <p>Join Your Team Scheduling Workspace</p>
+            <p>Team calendar and leave requests</p>
         </div>
 
         <div class="auth-card">

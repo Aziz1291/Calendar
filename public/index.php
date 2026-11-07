@@ -93,7 +93,7 @@ require_once('../views/header.php');
         </div>
     </div>
 
-    <!-- Architectural Grid (Desktop) -->
+    <!-- Month grid (desktop) -->
     <div class="calendar-grid-card">
         <table class="calendar-grid">
             <thead>
@@ -152,7 +152,7 @@ require_once('../views/header.php');
         <!-- Horizontal Date Carousel -->
         <div class="mobile-carousel-container">
             <div class="mobile-carousel" role="tablist" id="mobileCarousel">
-                <button type="button" class="mobile-carousel-day mobile-carousel-day--all" data-date="all" title="View all events in month">
+                <button type="button" class="mobile-carousel-day mobile-carousel-day--all" data-date="all" title="Show the whole month">
                     <span class="mobile-carousel-day__name">ALL</span>
                     <span class="mobile-carousel-day__num">&infin;</span>
                     <span class="mobile-carousel-day__dots"></span>
@@ -188,20 +188,20 @@ require_once('../views/header.php');
         <div class="mobile-feed">
             <div class="mobile-feed__header">
                 <div>
-                    <h3 id="mobileFeedDateTitle" class="mobile-feed__title">Agenda Feed</h3>
-                    <div id="mobileFeedCount" class="mobile-feed__count">Showing events for current month</div>
+                    <h3 id="mobileFeedDateTitle" class="mobile-feed__title">This month</h3>
+                    <div id="mobileFeedCount" class="mobile-feed__count">Showing the whole month</div>
                 </div>
                 <a href="add.php" id="mobileAddBtn" class="btn btn-sm btn-primary">
-                    <?= $user->isAdmin() ? '+ New Event' : '+ Request Off' ?>
+                    <?= $user->isAdmin() ? '+ New Event' : '+ Request Day Off' ?>
                 </a>
             </div>
 
             <div id="mobileFeedList" class="mobile-feed__list">
                 <?php if (empty($allMonthEvents)): ?>
                     <div class="mobile-feed-empty">
-                        <p class="mb-2">No events scheduled for <?= h($month->toString()) ?>.</p>
+                        <p class="mb-2">Nothing scheduled for <?= h($month->toString()) ?>.</p>
                         <a href="add.php" class="btn btn-sm btn-primary">
-                            <?= $user->isAdmin() ? '+ Create Company Event' : '+ Submit Leave Request' ?>
+                            <?= $user->isAdmin() ? '+ Create Company Event' : '+ Request Day Off' ?>
                         </a>
                     </div>
                 <?php else: ?>
@@ -223,7 +223,7 @@ require_once('../views/header.php');
                             <div class="mobile-feed-card__meta">
                                 <span class="mobile-feed-card__time"><?= $dateFormatted ?></span>
                                 <span>&middot;</span>
-                                <span><?= $isAdminEvt ? 'Company Milestone' : 'Personal Leave' ?></span>
+                                <span><?= $isAdminEvt ? 'Company event' : 'Leave request' ?></span>
                             </div>
                             <?php if (!empty($ev['description'])): ?>
                                 <div style="font-size: 0.82rem; color: var(--ink-secondary); line-height: 1.4;">
@@ -247,9 +247,9 @@ require_once('../views/header.php');
             </div>
 
             <div id="mobileFeedEmptyState" class="mobile-feed-empty d-none">
-                <p class="mb-2">No scheduled events for this selected day.</p>
+                <p class="mb-2">Nothing scheduled for this day.</p>
                 <a href="add.php" id="mobileAddForDayBtn" class="btn btn-sm btn-primary">
-                    <?= $user->isAdmin() ? '+ Schedule Event on this Day' : '+ Request Day Off on this Day' ?>
+                    <?= $user->isAdmin() ? '+ Create Event on this Day' : '+ Request Day Off on this Day' ?>
                 </a>
             </div>
         </div>
@@ -275,8 +275,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 c.classList.remove('d-none');
                 visibleCount++;
             });
-            if (feedTitle) feedTitle.textContent = 'All Month Events';
-            if (feedCount) feedCount.textContent = 'Showing ' + visibleCount + ' total events';
+            if (feedTitle) feedTitle.textContent = 'Whole month';
+            if (feedCount) feedCount.textContent = 'Showing ' + visibleCount + (visibleCount === 1 ? ' entry' : ' entries');
             if (emptyState) emptyState.classList.add('d-none');
         } else {
             feedCards.forEach(c => {
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             if (feedTitle) feedTitle.textContent = (dayName ? dayName + ', ' : '') + dateStr;
-            if (feedCount) feedCount.textContent = visibleCount + (visibleCount === 1 ? ' event scheduled' : ' events scheduled');
+            if (feedCount) feedCount.textContent = visibleCount + (visibleCount === 1 ? ' entry' : ' entries');
 
             if (visibleCount === 0) {
                 if (emptyState) {

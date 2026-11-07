@@ -17,14 +17,14 @@ render('header.php', ['title' => $event->getName()]);
 ?>
 
 <div class="container">
-<h1>Reject Event: <?= htmlspecialchars($event->getName()) ?></h1>
+<h1>Reject Request: <?= htmlspecialchars($event->getName()) ?></h1>
 <form action="" method="POST">
 <input type="hidden" name="id" value="<?= $event->getId() ?>">
 <div class="form-group">
 <label for="rejectionReason">Reason for Rejection</label>
 <textarea name="rejectionReason" id="rejectionReason" class="form-control" required></textarea>
 </div>
-<button type="submit" class="btn btn-danger">Reject Event</button>
+<button type="submit" class="btn btn-danger">Reject Request</button>
 <a href="../../public/eventsTable.php" class="btn btn-secondary">Cancel</a>
 </form>
 </div>

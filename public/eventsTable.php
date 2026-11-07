@@ -59,14 +59,14 @@ render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Request
     <!-- Toolbar -->
     <div class="table-toolbar">
         <div class="table-toolbar__title">
-            <h2><?= $user->isAdmin() ? 'Leave &amp; Schedule Matrix' : 'My Leave Requests' ?></h2>
-            <span class="count-badge"><?= $eventCount ?> <?= $eventCount === 1 ? 'record' : 'records' ?></span>
+            <h2><?= $user->isAdmin() ? 'Requests' : 'My Requests' ?></h2>
+            <span class="count-badge"><?= $eventCount ?> <?= $eventCount === 1 ? 'request' : 'requests' ?></span>
         </div>
 
         <form action="" method="GET" class="table-toolbar__filters d-flex align-items-center gap-2 flex-wrap">
             <input type="text" name="search" id="search"
                    value="<?= h($_GET['search'] ?? '') ?>"
-                   placeholder="<?= $user->isAdmin() ? 'Filter by title or employee...' : 'Filter by request reason...' ?>"
+                   placeholder="<?= $user->isAdmin() ? 'Title or employee' : 'Request reason' ?>"
                    class="form-control" style="width: 220px; font-size: 0.84rem; padding: 6px 10px;">
 
             <div class="filter-pills" role="group" aria-label="Status filters">
@@ -91,13 +91,13 @@ render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Request
         <div class="p-5 text-center">
             <div class="text-muted mb-3" style="font-size: 0.95rem;">
                 <?= $user->isAdmin()
-                    ? 'No leave records found matching your filters.'
+                    ? 'No requests match your filters.'
                     : ($hasStatus || $hasSearch
-                        ? 'No leave requests match the selected status or search filter.'
-                        : 'You have not submitted any leave requests yet.') ?>
+                        ? 'No requests match the selected status or search.'
+                        : 'You have not submitted any requests yet.') ?>
             </div>
             <a href="add.php" class="btn btn-primary btn-sm">
-                <?= $user->isAdmin() ? '+ Create Company Event' : '+ Submit New Request' ?>
+                <?= $user->isAdmin() ? '+ Create Company Event' : '+ Request Day Off' ?>
             </a>
         </div>
     <?php else: ?>
@@ -108,9 +108,9 @@ render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Request
                         <?php if ($user->isAdmin()): ?>
                             <th>Employee</th>
                         <?php endif; ?>
-                        <th>Reason / Title</th>
-                        <th>Start Time</th>
-                        <th>End Time</th>
+                        <th>Request</th>
+                        <th>Start</th>
+                        <th>End</th>
                         <th>Duration</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -176,7 +176,7 @@ render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Request
 
                                     <?php if ((!$user->isAdmin() && $event->getStatus() === 'Pending') || ($user->isAdmin() && (int)$event->getAdminEvent() === 1)): ?>
                                         <a href="edit.php?id=<?= $event->getId() ?>" class="btn btn-sm btn-secondary">Edit</a>
-                                        <?= action_button('delete.php', ['id' => $event->getId(), 'from' => 'eventsTable'], 'Delete', 'btn btn-sm btn-danger', 'Are you sure you want to delete this event?') ?>
+                                        <?= action_button('delete.php', ['id' => $event->getId(), 'from' => 'eventsTable'], 'Delete', 'btn btn-sm btn-danger', ((int)$event->getAdminEvent() === 1 ? 'Delete this event?' : 'Delete this request?')) ?>
                                     <?php endif; ?>
 
                                     <a href="event.php?id=<?= $event->getId() ?>" class="btn btn-sm btn-ghost">View</a>

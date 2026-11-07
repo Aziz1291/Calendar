@@ -69,8 +69,8 @@ render('header.php', ['title' => 'Edit ' . $event->getName()]);
 
     <div class="form-sheet__head d-flex flex-wrap align-items-center justify-content-between gap-2">
         <div>
-            <h1><?= $user->isAdmin() ? 'Modify Company Event' : 'Modify Leave Request' ?></h1>
-            <p>Update schedule dates, titles, or operational notes.</p>
+            <h1><?= $user->isAdmin() ? 'Edit Company Event' : 'Edit Request' ?></h1>
+            <p>Change the title, dates or notes.</p>
         </div>
         <span class="status-pill <?= $event->getStatus() ?> <?= $event->getStatusToneClass() ?>">
             <?= $event->getStatus() ?>
@@ -99,11 +99,11 @@ render('header.php', ['title' => 'Edit ' . $event->getName()]);
                 </button>
                 <a href="index.php" class="btn btn-secondary">Cancel</a>
             </div>
-            <button type="submit" form="delete-event" class="btn btn-danger">Delete Event</button>
+            <button type="submit" form="delete-event" class="btn btn-danger"><?= $user->isAdmin() ? 'Delete Event' : 'Delete Request' ?></button>
         </div>
     </form>
     <form id="delete-event" method="post" action="delete.php"
-          onsubmit="return confirm('Are you sure you want to permanently delete this event?');">
+          onsubmit="return confirm('<?= $user->isAdmin() ? 'Delete this event?' : 'Delete this request?' ?>');">
         <?= csrf_field() ?>
         <input type="hidden" name="id" value="<?= $event->getId() ?>">
         <input type="hidden" name="from" value="eventsTable">
