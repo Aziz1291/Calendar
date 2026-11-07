@@ -64,10 +64,12 @@ render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Request
         </div>
 
         <form action="" method="GET" class="table-toolbar__filters d-flex align-items-center gap-2 flex-wrap">
+            <label for="search" class="search-label">Search</label>
             <input type="text" name="search" id="search"
                    value="<?= h($_GET['search'] ?? '') ?>"
                    placeholder="<?= $user->isAdmin() ? 'Title or employee' : 'Request reason' ?>"
                    class="form-control" style="width: 220px; font-size: 0.84rem; padding: 6px 10px;">
+            <button type="submit" name="status" value="<?= h($currentStatus) ?>" class="btn btn-sm btn-secondary">Search</button>
 
             <div class="filter-pills" role="group" aria-label="Status filters">
                 <button type="submit" name="status" value="all"
@@ -136,7 +138,7 @@ render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Request
                                 </td>
                             <?php endif; ?>
                             <td data-label="Request">
-                                <div class="fw-semibold text-dark"><?= h($event->getName()) ?></div>
+                                <div class="fw-semibold text-dark" title="<?= h($event->getName()) ?>"><?= h($event->getName()) ?></div>
                                 <?php if ((int)$event->getAdminEvent() === 1): ?>
                                     <span class="badge" style="background: var(--tone-sea-bg); color: var(--tone-sea-text); border: 1px solid var(--tone-sea-border); font-size: 10px;">
                                         Company Wide

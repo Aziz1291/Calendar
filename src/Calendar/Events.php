@@ -124,8 +124,8 @@ class Events
         }
 
         if ($search !== null && $search !== '') {
-            $sql .= " AND (name LIKE :search OR description LIKE :search)";
-            $params[':search'] = '%' . $search . '%';
+            $sql .= " AND (name LIKE :search ESCAPE '|' OR description LIKE :search ESCAPE '|')";
+            $params[':search'] = '%' . self::escapeLike($search) . '%';
         }
 
         $sql .= " ORDER BY start DESC";
@@ -206,10 +206,16 @@ class Events
         return (int)$result['count'];
     }
 
+    /** Makes % and _ in a search word match themselves (| is the escape character in the queries). */
+    private static function escapeLike(string $value): string
+    {
+        return str_replace(['|', '%', '_'], ['||', '|%', '|_'], $value);
+    }
+
     public function filterBySearch($search)
     {
-        $statement = $this->pdo->prepare("SELECT events.* FROM events LEFT JOIN users ON events.user_id = users.id WHERE users.username LIKE ? OR events.name LIKE ? ORDER BY events.start DESC");
-        $param = '%' . $search . '%';
+        $statement = $this->pdo->prepare("SELECT events.* FROM events LEFT JOIN users ON events.user_id = users.id WHERE users.username LIKE ? ESCAPE '|' OR events.name LIKE ? ESCAPE '|' ORDER BY events.start DESC");
+        $param = '%' . self::escapeLike((string) $search) . '%';
         $statement->execute([$param, $param]);
         $statement->setFetchMode(\PDO::FETCH_CLASS, \Calendar\Event::class);
         return $statement->fetchAll();
@@ -217,8 +223,8 @@ class Events
 
     public function filterBySearchAndStatus($search, $status)
     {
-        $statement = $this->pdo->prepare("SELECT events.* FROM events LEFT JOIN users ON events.user_id = users.id WHERE (users.username LIKE ? OR events.name LIKE ?) AND events.status = ? ORDER BY events.start DESC");
-        $param = '%' . $search . '%';
+        $statement = $this->pdo->prepare("SELECT events.* FROM events LEFT JOIN users ON events.user_id = users.id WHERE (users.username LIKE ? ESCAPE '|' OR events.name LIKE ? ESCAPE '|') AND events.status = ? ORDER BY events.start DESC");
+        $param = '%' . self::escapeLike((string) $search) . '%';
         $statement->execute([$param, $param, $status]);
         $statement->setFetchMode(\PDO::FETCH_CLASS, \Calendar\Event::class);
         return $statement->fetchAll();

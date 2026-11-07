@@ -102,7 +102,7 @@ render('header.php', ['title' => 'Dashboard']);
         </div>
     </div>
 
-    <!-- Split Cockpit Layout -->
+    <!-- Queue and links -->
     <div class="dashboard-split">
         <!-- Left: Actionable Queue -->
         <div class="dashboard-panel">

@@ -215,7 +215,7 @@ require_once('../views/header.php');
                     ?>
                         <div class="mobile-feed-card <?= $toneClass ?>" data-date="<?= $ev['for_date'] ?>">
                             <div class="mobile-feed-card__top">
-                                <div class="mobile-feed-card__title"><?= h($ev['name']) ?></div>
+                                <div class="mobile-feed-card__title" title="<?= h($ev['name']) ?>"><?= h($ev['name']) ?></div>
                                 <span class="status-pill <?= $ev['status'] ?> <?= $toneClass ?>">
                                     <?= $ev['status'] ?>
                                 </span>

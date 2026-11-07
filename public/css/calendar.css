@@ -1642,3 +1642,12 @@ a:hover {
   .form-sheet .form-actions > .btn { width: 100%; }
   .form-sheet .form-actions .btn { flex: 1 1 auto; }
 }
+
+.search-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+  margin: 0;
+}
