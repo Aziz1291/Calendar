@@ -21,6 +21,10 @@ try {
 }
 
 $user = current_user();
+// Someone else's request looks the same as a missing one.
+if (!can_view_event($event, $user)) {
+    e404();
+}
 $creator = new \Calendar\User();
 if ($event->getUserId()) {
     $creator->getUser($event->getUserId());
@@ -163,13 +167,12 @@ render('header.php', ['title' => $event->getName()]);
         </a>
         <div class="d-flex align-items-center gap-2 flex-wrap">
             <?php if ($user->isAdmin() && $event->getStatus() === 'Pending'): ?>
-                <a href="AdminActionApprove.php?id=<?= $event->getId() ?>&from=eventsTable" class="btn btn-success">Approve Request</a>
+                <?= action_button('AdminActionApprove.php', ['id' => $event->getId(), 'from' => 'eventsTable'], 'Approve Request', 'btn btn-success', 'Approve this request?') ?>
                 <a href="AdminActionReject.php?id=<?= $event->getId() ?>&from=eventsTable" class="btn btn-outline-danger">Decline Request</a>
             <?php endif; ?>
-            <?php if ($user->isAdmin() || ($event->getUserId() == $user->getId() && $event->getStatus() === 'Pending')): ?>
+            <?php if (can_change_event($event, $user)): ?>
                 <a href="edit.php?id=<?= $event->getId() ?>" class="btn btn-primary">Edit Request</a>
-                <a href="delete.php?id=<?= $event->getId() ?>" class="btn btn-danger"
-                   onclick="return confirm('Are you sure you want to delete this event?');">Delete</a>
+                <?= action_button('delete.php', ['id' => $event->getId(), 'from' => 'eventsTable'], 'Delete', 'btn btn-danger', 'Are you sure you want to delete this event?') ?>
             <?php endif; ?>
         </div>
     </div>

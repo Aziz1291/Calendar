@@ -74,6 +74,9 @@ class User
         $stmt = get_pdo()->prepare($sql);
         $stmt->execute([$id]);
         $row = $stmt->fetch();
+        if (!$row) {
+            return null;
+        }
         $this->id = $row["id"];
         $this->username = $row["username"];
         $this->email = $row["email"];

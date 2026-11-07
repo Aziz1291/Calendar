@@ -164,8 +164,7 @@ render('header.php', ['title' => 'Dashboard']);
                                     <td>
                                         <div class="table-actions">
                                             <?php if ($isAdmin): ?>
-                                                <a href="AdminActionApprove.php?id=<?= $req->getId() ?>&from=dashboard"
-                                                   class="btn btn-sm btn-success" title="Approve Request">Approve</a>
+                                                <?= action_button('AdminActionApprove.php', ['id' => $req->getId(), 'from' => 'dashboard'], 'Approve', 'btn btn-sm btn-success', 'Approve this request?') ?>
                                                 <a href="AdminActionReject.php?id=<?= $req->getId() ?>&from=dashboard"
                                                    class="btn btn-sm btn-danger" title="Reject Request">Reject</a>
                                             <?php else: ?>

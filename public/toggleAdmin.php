@@ -3,28 +3,24 @@ if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once '../src/Calendar/bootstrap.php';
 
 $currentUser = current_user();
-
-// Only admins can change roles
 if (!$currentUser || !$currentUser->isAdmin()) {
-    header('Location: usersTable.php');
+    header('Location: index.php');
     exit;
 }
+require_post('usersTable.php');
 
-$userId = $_GET['id'] ?? null;
-$currentRole = $_GET['role'] ?? 'user';
+$userId = (int) ($_POST['id'] ?? 0);
+$target = (new \Calendar\User())->getUser($userId);
 
-if ($userId) {
-    // Prevent admin from demoting themselves
-    if ($userId == $currentUser->getId()) {
-        $_SESSION['error'] = 'You cannot change your own role.';
-        header('Location: usersTable.php');
-        exit;
-    }
-
-    // Toggle role
-    $newRole = ($currentRole === 'admin') ? 'user' : 'admin';
+if (!$target) {
+    $_SESSION['error'] = 'User not found.';
+} elseif ($userId === (int) $currentUser->getId()) {
+    $_SESSION['error'] = 'You cannot change your own role.';
+} else {
+    // The new role comes from the stored role, not from the request.
+    $newRole = $target['role'] === 'admin' ? 'user' : 'admin';
     (new \Calendar\User())->updateRole($userId, $newRole);
-    $_SESSION['success'] = 'User role updated successfully.';
+    $_SESSION['success'] = "{$target['username']} is now " . ($newRole === 'admin' ? 'an admin.' : 'a regular user.');
 }
 
 header('Location: usersTable.php');

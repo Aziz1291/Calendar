@@ -98,6 +98,66 @@ function is_authenticated(): bool
     return isset($_SESSION['id']);
 }
 
+/** One token per session, sent with every form that changes data. */
+function csrf_token(): string
+{
+    if (empty($_SESSION['csrf'])) {
+        $_SESSION['csrf'] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION['csrf'];
+}
+
+function csrf_field(): string
+{
+    return '<input type="hidden" name="csrf_token" value="' . h(csrf_token()) . '">';
+}
+
+function csrf_valid(): bool
+{
+    return !empty($_SESSION['csrf'])
+        && isset($_POST['csrf_token'])
+        && hash_equals($_SESSION['csrf'], (string) $_POST['csrf_token']);
+}
+
+/** Actions that change data only run from a POST form with the session token. */
+function require_post(string $back): void
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !csrf_valid()) {
+        $_SESSION['error'] = 'That action only works from its button. Please try again.';
+        header('Location: ' . $back);
+        exit;
+    }
+}
+
+/** A one-button form, used instead of a link for actions that change data. */
+function action_button(string $action, array $fields, string $label, string $class, ?string $confirm = null): string
+{
+    $html = '<form method="post" action="' . h($action) . '" class="d-inline"';
+    if ($confirm !== null) {
+        $html .= ' onsubmit="return confirm(' . h(json_encode($confirm)) . ');"';
+    }
+    $html .= '>' . csrf_field();
+    foreach ($fields as $name => $value) {
+        $html .= '<input type="hidden" name="' . h($name) . '" value="' . h((string) $value) . '">';
+    }
+    return $html . '<button type="submit" class="' . h($class) . '">' . h($label) . '</button></form>';
+}
+
+/** Admins see everything, everyone sees company events, employees see their own requests. */
+function can_view_event(\Calendar\Event $event, \Calendar\User $user): bool
+{
+    return $user->isAdmin()
+        || (int) $event->getAdminEvent() === 1
+        || (int) $event->getUserId() === (int) $user->getId();
+}
+
+/** Admins change anything; employees change only their own pending requests. */
+function can_change_event(\Calendar\Event $event, \Calendar\User $user): bool
+{
+    return $user->isAdmin()
+        || ((int) $event->getUserId() === (int) $user->getId() && $event->getStatus() === 'Pending');
+}
+
 function current_user(): ?\Calendar\User
 {
     if (!isset($_SESSION['id'])) {

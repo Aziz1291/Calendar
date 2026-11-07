@@ -97,24 +97,12 @@ render('header.php', ['title' => 'Employee Directory']);
 
                                 <?php if (!$isSelf): ?>
                                     <?php if ($isAdminRole): ?>
-                                        <a href="toggleAdmin.php?id=<?= $u['id'] ?>&role=<?= $u['role'] ?>"
-                                           class="btn btn-sm btn-secondary"
-                                           onclick="return confirm('Revoke administrator privileges from <?= h($u['username']) ?>?');">
-                                            Demote to User
-                                        </a>
+                                        <?= action_button('toggleAdmin.php', ['id' => $u['id']], 'Demote to User', 'btn btn-sm btn-secondary', 'Revoke administrator privileges from ' . $u['username'] . '?') ?>
                                     <?php else: ?>
-                                        <a href="toggleAdmin.php?id=<?= $u['id'] ?>&role=<?= $u['role'] ?>"
-                                           class="btn btn-sm btn-outline-primary"
-                                           onclick="return confirm('Promote <?= h($u['username']) ?> to administrator?');">
-                                            Promote to Admin
-                                        </a>
+                                        <?= action_button('toggleAdmin.php', ['id' => $u['id']], 'Promote to Admin', 'btn btn-sm btn-outline-primary', 'Promote ' . $u['username'] . ' to administrator?') ?>
                                     <?php endif; ?>
 
-                                    <a href="deleteUser.php?id=<?= $u['id'] ?>"
-                                       class="btn btn-sm btn-danger"
-                                       onclick="return confirm('Permanently remove employee <?= h($u['username']) ?>? All associated leaves will be deleted.');">
-                                        Delete
-                                    </a>
+                                    <?= action_button('deleteUser.php', ['id' => $u['id']], 'Delete', 'btn btn-sm btn-danger', 'Permanently remove employee ' . $u['username'] . '? All associated leaves will be deleted.') ?>
                                 <?php else: ?>
                                     <span class="badge" style="background: var(--tint); color: var(--muted); border: 1px solid var(--line); font-size: 11px;">
                                         Current Session

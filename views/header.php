@@ -48,7 +48,7 @@ $currentScript = basename($_SERVER['PHP_SELF'] ?? '');
                             <?= h($user->getRole()) ?>
                         </span>
                     </div>
-                    <a href="logout.php" class="btn btn-sm btn-ghost">Sign Out</a>
+                    <?= action_button('logout.php', [], 'Sign Out', 'btn btn-sm btn-ghost') ?>
                 <?php else: ?>
                     <a href="login.php" class="btn btn-sm btn-ghost">Log In</a>
                     <a href="register.php" class="btn btn-sm btn-primary">Create Account</a>

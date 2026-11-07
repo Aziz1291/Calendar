@@ -39,7 +39,9 @@ $reason = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reason = trim((string) ($_POST['rejectionReason'] ?? ''));
     // The reason is required on the server too, not only by the browser.
-    if (mb_strlen($reason) < 3) {
+    if (!csrf_valid()) {
+        $reasonError = 'Your session expired. Please submit the form again.';
+    } elseif (mb_strlen($reason) < 3) {
         $reasonError = 'Give a reason of at least 3 characters.';
     } elseif (mb_strlen($reason) > 1000) {
         $reasonError = 'The reason must be 1000 characters or fewer.';
@@ -94,6 +96,7 @@ render('header.php', ['title' => 'Decline Request: ' . $event->getName()]);
     </div>
 
     <form action="" method="POST">
+        <?= csrf_field() ?>
         <input type="hidden" name="id" value="<?= $event->getId() ?>">
         <input type="hidden" name="from" value="<?= h($from) ?>">
 

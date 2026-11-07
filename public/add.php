@@ -26,6 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $validator = new Calendar\EventValidator($data);
     // Employees request time off from today on; admins may record past company events.
     $errors = $validator->validates($_POST, $user->isAdmin());
+    if (!csrf_valid()) {
+        $errors['form'] = 'Your session expired. Please submit the form again.';
+    }
     if (empty($errors)) {
         $events = new Calendar\Events(get_pdo());
         $event = $events->hydrate(new Calendar\Event(), $data);
@@ -75,6 +78,7 @@ render('header.php', ['title' => $pageTitle]);
     <?php endif; ?>
 
     <form action="" method="POST">
+        <?= csrf_field() ?>
         <?= render('calendar/form.php', ['data' => $data, 'errors' => $errors]) ?>
 
         <div class="form-actions">

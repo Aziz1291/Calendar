@@ -1,9 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
-require_once('../src/Calendar/bootstrap.php');
-require_once('../src/Calendar/Events.php');
-require_once('../src/Calendar/Event.php');
-require_once('../src/Calendar/User.php');
+require_once '../src/Calendar/bootstrap.php';
 
 if (!is_authenticated()) {
     header('Location: login.php');
@@ -11,32 +8,29 @@ if (!is_authenticated()) {
 }
 
 $user = current_user();
-if (!$user || !$user->isAdmin()) {
+if (!$user->isAdmin()) {
     header('Location: eventsTable.php');
     exit;
 }
 
-$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$from = $_GET['from'] ?? '';
+$back = ($_POST['from'] ?? '') === 'dashboard' ? 'dashboard.php' : 'eventsTable.php';
+require_post($back);
 
-if ($id > 0) {
-    try {
-        $eventsModel = new \Calendar\Events(get_pdo());
-        $event = $eventsModel->find($id);
-        if ($event) {
-            $event->setStatus('Approved');
-            $event->setRejectionReason('');
-            $eventsModel->update($event);
-            $_SESSION['success'] = "Leave request '{$event->getName()}' has been approved.";
-        }
-    } catch (\Exception $e) {
-        $_SESSION['error'] = 'Unable to approve request.';
-    }
+$eventsModel = new \Calendar\Events(get_pdo());
+try {
+    $event = $eventsModel->find((int) ($_POST['id'] ?? 0));
+} catch (\Exception $e) {
+    $event = null;
 }
 
-if ($from === 'dashboard') {
-    header('Location: dashboard.php');
+if (!$event) {
+    $_SESSION['error'] = 'Request not found.';
 } else {
-    header('Location: eventsTable.php');
+    $event->setStatus('Approved');
+    $event->setRejectionReason('');
+    $eventsModel->update($event);
+    $_SESSION['success'] = "Leave request '{$event->getName()}' has been approved.";
 }
+
+header('Location: ' . $back);
 exit;

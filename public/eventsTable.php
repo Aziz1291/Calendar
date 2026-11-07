@@ -163,24 +163,20 @@ render('header.php', ['title' => $user->isAdmin() ? 'All Requests' : 'My Request
                                 <div class="table-actions">
                                     <?php if ($user->isAdmin()): ?>
                                         <?php if ($event->getStatus() === 'Pending'): ?>
-                                            <a href="AdminActionApprove.php?id=<?= $event->getId() ?>&from=eventsTable"
-                                               class="btn btn-sm btn-success" title="Approve">Approve</a>
+                                            <?= action_button('AdminActionApprove.php', ['id' => $event->getId(), 'from' => 'eventsTable'], 'Approve', 'btn btn-sm btn-success', 'Approve this request?') ?>
                                             <a href="AdminActionReject.php?id=<?= $event->getId() ?>&from=eventsTable"
                                                class="btn btn-sm btn-danger" title="Reject">Reject</a>
                                         <?php elseif ($event->getStatus() === 'Approved'): ?>
                                             <a href="AdminActionReject.php?id=<?= $event->getId() ?>&from=eventsTable"
                                                class="btn btn-sm btn-danger" title="Revoke Approval">Reject</a>
                                         <?php elseif ($event->getStatus() === 'Rejected'): ?>
-                                            <a href="AdminActionApprove.php?id=<?= $event->getId() ?>&from=eventsTable"
-                                               class="btn btn-sm btn-success" title="Approve Request">Approve</a>
+                                            <?= action_button('AdminActionApprove.php', ['id' => $event->getId(), 'from' => 'eventsTable'], 'Approve', 'btn btn-sm btn-success', 'Approve this request?') ?>
                                         <?php endif; ?>
                                     <?php endif; ?>
 
                                     <?php if ((!$user->isAdmin() && $event->getStatus() === 'Pending') || ($user->isAdmin() && (int)$event->getAdminEvent() === 1)): ?>
                                         <a href="edit.php?id=<?= $event->getId() ?>" class="btn btn-sm btn-secondary">Edit</a>
-                                        <a href="delete.php?id=<?= $event->getId() ?>&from=eventsTable"
-                                           class="btn btn-sm btn-danger"
-                                           onclick="return confirm('Are you sure you want to delete this event?');">Delete</a>
+                                        <?= action_button('delete.php', ['id' => $event->getId(), 'from' => 'eventsTable'], 'Delete', 'btn btn-sm btn-danger', 'Are you sure you want to delete this event?') ?>
                                     <?php endif; ?>
 
                                     <a href="event.php?id=<?= $event->getId() ?>" class="btn btn-sm btn-ghost">View</a>
