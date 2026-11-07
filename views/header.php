@@ -13,7 +13,10 @@ $currentScript = basename($_SERVER['PHP_SELF'] ?? '');
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/calendar.css?v=<?= filemtime(__DIR__ . '/../public/css/calendar.css') ?>">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📅</text></svg>">
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon-48.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
 </head>
 <body><a href="#main-content" style="position:absolute;left:-10000px" onfocus="this.style.left='1rem'" onblur="this.style.left='-10000px'">Skip to content</a>
     <header class="masthead">
