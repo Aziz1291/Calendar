@@ -50,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         $events->hydrate($event, $data);
         $events->update($event);
-        header("Location: index.php?success=1");
+        $_SESSION['success'] = current_user()->isAdmin() ? 'Event updated.' : 'Request updated.';
+        header("Location: index.php");
         exit;
     }
 }

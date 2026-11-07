@@ -41,7 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $event->setStatus('Pending');
         }
         $events->create($event);
-        header("Location: index.php?success=1");
+        $_SESSION['success'] = $user->isAdmin() ? 'Company event scheduled.' : 'Day-off request submitted.';
+        header("Location: index.php");
         exit;
     }
 }

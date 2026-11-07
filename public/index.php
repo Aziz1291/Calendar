@@ -62,12 +62,15 @@ require_once('../views/header.php');
 
 <div class="calendar-view">
     <!-- Feedback Alerts -->
-    <?php if (isset($_GET['success'])): ?>
-        <div class="alert alert-success d-flex align-items-center gap-2">
-            <span>&check;</span>
-            <span><?= $user->isAdmin() ? 'Company event scheduled successfully.' : 'Day-off request submitted successfully.' ?></span>
-        </div>
-    <?php endif; ?>
+    <?php foreach (['success' => 'alert-success', 'error' => 'alert-danger'] as $key => $class): ?>
+        <?php if (isset($_SESSION[$key])): ?>
+            <div class="alert <?= $class ?> d-flex align-items-center gap-2" role="status">
+                <span><?= $key === 'success' ? '&check;' : '&bull;' ?></span>
+                <span><?= h($_SESSION[$key]) ?></span>
+            </div>
+            <?php unset($_SESSION[$key]); ?>
+        <?php endif; ?>
+    <?php endforeach; ?>
 
     <!-- Calendar Toolbar -->
     <div class="calendar-toolbar">
